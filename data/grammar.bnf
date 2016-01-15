@@ -1,0 +1,199 @@
+!======================================================
+!
+!	DAMNBASIC
+!	=========
+!
+! Small demo:
+! 
+!	let value = 10
+!
+!	# adds x and y
+!	func add (x, y)
+!		return x + y
+!	end
+!
+!	# recursive fibonacci
+!	# sequence calculator
+!	func fib (n)
+!		if (n = 0)
+!			return 0
+!		elseif (n = 1) 
+!			return 1
+!		else 
+!			return add(fib(n - 1), fib(n - 2))
+!		end
+!	end
+!
+!	# entry point
+!	func main ()
+!		let seq = fib(value)
+!	end
+!
+!======================================================
+
+"Name"          =   'DAMNBASIC'
+"Author"        =   'Felipe Alfonso'
+"Version"       =   '0.0.1'
+"About"         =   'DAMNBASIC is a BASIC based programming language targeted for 8 bit platforms'
+
+"Start Symbol"  =   <program>
+
+
+!======================================================
+!   STATEMENTS
+!======================================================
+
+<program>				::= <var-decl>
+							|
+							<func-decl>
+
+<stmt-seq>				::=	<stmt> <line-feed> <stmt-seq>
+							|
+							<stmt>
+					
+<stmt>					::=	<if-stmt>
+							|
+							<assign-stmt>
+							|
+							<while-stmt>
+							|
+							<var-decl>
+							|
+							<or-expr>
+
+<if-stmt>				::= 'if' '(' <or-expr> ')' <stmt-seq>
+
+<elseif-stmt>			::= 'elseif' '(' <or-expr> ')' <stmt-seq> ( <elseif-stmt> | <else-stmt> )
+
+<else-stmt>				::= 'else' <stmt-set> 'end'
+						|	'end'
+
+<assign-stmt>			::= <identifier> '=' <or-expr>
+
+<while-stmt>			::= 'while' '(' <or-expr> ')' <stmt-seq> 'end'
+
+<return-stmt>			::= 'return' <or-expr>
+
+!======================================================
+!   DECLARATIONS
+!======================================================
+
+<func-decl>				::= 'func' <identifier> '(' <var-list> ')' { <stmt> <line-feed> | <return-stmt> } 'end'
+
+<var-list>				::= <var-list> ',' <var-list>
+							|
+							<identifier>
+
+<var-decl>				::= 'let' <identifier> '=' <or-expr>
+
+!======================================================
+!   EXPRESSIONS
+!======================================================
+
+<expr-list>				::= <or-list> ',' <expr-list>
+							|
+							<or-expr>
+
+<or-expr>				::=	<and-expr> 'or' <or-expr>
+							|
+							<and-expr>
+							;
+<and-expr>				::=	<not-expr> 'and' <and-expr>
+							|
+							<not-expr>
+					
+<not-expr>				::=	'not' <compare-expr>
+							|
+							<compare-expr>
+					
+<compare-expr>			::=	<bitwise-expr> '=' <compare-expr>
+							|
+							<bitwise-expr> '<' <compare-expr>
+							|
+							<bitwise-expr> '>' <compare-expr>
+							|
+							<bitwise-expr> '<>' <compare-expr>
+							|
+							<bitwise-expr> '>=' <compare-expr>
+							|
+							<bitwise-expr> '<=' <compare-expr>
+							|
+							<bitwise-expr>
+
+<bitwise-expr>			::= <modulus-expr> 'shr' <bitwise-expr>
+							|
+							<modulus-expr> 'shl' <bitwise-expr>
+							|
+							<modulus-expr> 'xor' <bitwise-expr>
+							|
+							<modulus-expr> 'ior' <bitwise-expr>
+							|
+							<modulus-expr> 'band' <bitwise-expr>
+							|
+							<modulus-expr>
+
+<modulus-expr>			::= <additive-expr> 'mod' <modulus-expr>
+							|
+							<additive-expr>
+
+<additive-expr>			::=	<multiplicative-expr> '+' <additive-expr>
+							|
+							<multiplicative-expr> '-' <additive-expr>
+							|
+							<multiplicative-expr>
+
+<multiplicative-expr>	::=	<negate-expr> '*' <multiplicative-expr>
+							|
+							<negate-expr> '/' <multiplicative-expr>
+							|
+							<negate-expr>
+
+<negate-expr>			::= '-' <call-expr>
+							|
+							<call-expr>
+
+<call-expr>				::	<identifier> '(' <expr-list> ')'
+							|
+							<factor>
+
+<factor>				::= <number-const>
+							|
+							<identifier>
+							|
+							<boolean-const>
+							|
+							'(' <or-expr> ')'
+
+<number-const>			::= <digit> { <digit> }
+
+<boolean-const>			::= ( 'true' | 'false' )
+
+<identifier>			::= <alpha> { <alpha> | <digit> | '_' }
+
+<digit>					::= '0' 
+							|   
+							'1' 
+							|   
+							... 
+							|   
+							'9'
+
+<alpha>					::=	'a'
+							|   
+							'b' 
+							|
+							'c' 
+							|
+							... 
+							|
+							'z' 
+							|
+							'A' 
+							|
+							'B' 
+							|
+							'C' 
+							|
+							... 
+							|
+							'Z'

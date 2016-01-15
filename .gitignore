@@ -1,0 +1,9 @@
+
+build/
+.vs/
+shinbasic.VC.opendb
+shinbasic.vcxproj.filters
+shinbasic.vcxproj.user
+shinbasic.sdf
+shinbasic.opensdf
+*.s65
