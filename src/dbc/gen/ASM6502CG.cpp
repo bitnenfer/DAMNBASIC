@@ -663,13 +663,16 @@ std::string dbc::gen::ASM6502CG::GenStmtAssign(LeafPtr Node)
 		Out += "\n\tsta $" + NumberToHex<uint16>(Addr);
 	}
 	else
-	{		
+	{
+		Out += GenCode(Node->Right);
 		Out += "; setting local var " + std::string(Node->Left->STRING) + "\n";
+		Out += "\tsta tmp\n";
 		Out += "\tlda #$" + NumberToHex<uint8>(0xFF - Addr);
 		Out += "\n\tclc\n"
 			"\tadc base_pointer\n"
 			"\ttax\n"
-			"\tlda stack_tail, x";
+			"\tlda tmp\n"
+			"\tsta stack_tail, x";
 	}
 	return Out + "\n";
 }
@@ -778,18 +781,14 @@ int16 dbc::gen::ASM6502CG::GetGlobal(char * VarName)
 
 int16 dbc::gen::ASM6502CG::GetLocal(char * VarName)
 {
-	GotOnScope = false;
 	if (Scopes.size() > 0)
 	{
+		GotOnScope = false;
 		for (VarScope& CurrentScope : Scopes)
 		{
-			if (&CurrentScope == this->CurrentScope)
+			if (&CurrentScope <= this->CurrentScope)
 			{
 				GotOnScope = true;
-			}
-			else
-			{
-				GotOnScope = false;
 			}
 			for (LocalVar& Var : CurrentScope.Variables)
 			{
