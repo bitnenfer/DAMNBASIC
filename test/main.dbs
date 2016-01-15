@@ -1,10 +1,6 @@
-let result = 0 
-func factorial(n)
-	if (n = 0)
-		return 1
-	end
-	return n * factorial(n - 1)
-end
+let result = 0
 func main ()
-	result = factorial(4)
+	while (true)
+		result = result + 1
+	end
 end

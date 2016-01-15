@@ -9,9 +9,11 @@ static bool GotOnScope = false;
 static int16 CurrentVarOffset = 0;
 static uint16 ScopeDeep = 10;
 static uint16 IfDeep = 10;
+static uint16 WhileDeep = 10;
 static std::string ScopeName = "global_";
 static std::string CmpLabel0 = "";
 static std::string CmpLabel1 = "";
+static std::string WhileLabel0 = "";
 static std::string CurrentFunc = "";
 static bool UsingMul = false;
 static bool UsingDiv = false;
@@ -149,6 +151,10 @@ std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 	{
 		return GenStmtAssign(Node);
 	}
+	else if (Node->Type == LeafType::STMT_WHILE)
+	{
+		return GenStmtWhile(Node);
+	}
 	else if (Node->Type == LeafType::STMT)
 	{
 		std::string Out;
@@ -161,6 +167,15 @@ std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 			Out += GenCode(Node->Right);
 		}
 		return Out;
+	}
+	else if (Node->Type == LeafType::STMT_SEQ)
+	{
+		std::string Out;
+		if (Node->Left != nullptr)
+		{
+			Out += GenCode(Node->Left);
+		}
+		Out += GenCode(Node->Right);
 	}
 	return "";
 }
@@ -592,7 +607,42 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 {
 	std::string Out;
 	EnterScope();
+	WhileLabel0 = ScopeName + std::to_string(ScopeDeep) + "_while_" + std::to_string(WhileDeep);
+	++WhileDeep;
+	Out += "; while statement\n";
+	Out += WhileLabel0 + ":\n";
+	GenCode(Node->Right);
+	if (IsCompare(Node->Left))
+	{
+		Out += GenExprCompare(Node->Left);
+	}
+	else if (IsLogical(Node->Left))
+	{
+		Out += GenExprLogical(Node->Left);
+	}
+	else if (IsExprGen(Node->Left))
+	{
+		Out += GenExpr(Node->Left);
+		Out += "\n\tcmp #$01\n";
+		Out += "\tbeq " + WhileLabel0;
+		Out += "\n";
+	}
+	else if (IsConst(Node->Left))
+	{
+		Out += GenConst(Node->Left);
+		Out += "\n\tcmp #$01\n";
+		Out += "\tbeq " + WhileLabel0;
+		Out += "\n";
+	}
+	else if (Node->Left->Type == LeafType::EXPR_CALL)
+	{
+		Out += GenExprCall(Node->Left);
+		Out += "\n\tcmp #$01\n";
+		Out += "\tbeq " + WhileLabel0;
+		Out += "\n";
+	}
 	ExitScope();
+	--WhileDeep;
 	return Out;
 }
 
@@ -627,9 +677,9 @@ std::string dbc::gen::ASM6502CG::GenStmtIf(LeafPtr Node)
 		Out += "; if statement\n";
 	}
 	EnterScope();
-	CmpLabel0 = ScopeName + std::to_string(ScopeDeep) + "_" + std::to_string(IfDeep);
+	CmpLabel0 = ScopeName + std::to_string(ScopeDeep) + "_if_" + std::to_string(IfDeep);
 	++IfDeep;
-	CmpLabel1 = ScopeName + std::to_string(ScopeDeep) + "_" + std::to_string(IfDeep);
+	CmpLabel1 = ScopeName + std::to_string(ScopeDeep) + "_if_" + std::to_string(IfDeep);
 	if (Node->Right != nullptr)
 	{
 		if (IsCompare(Node->Left))
