@@ -7,8 +7,8 @@ static std::string CurrentOp = "\tlda";
 static int16 CurrentReturnOffset = 0;
 static bool GotOnScope = false;
 static int16 CurrentVarOffset = 0;
-static int16 ScopeDeep = 0;
-static int16 IfDeep = 0;
+static uint16 ScopeDeep = 10;
+static uint16 IfDeep = 10;
 static std::string ScopeName = "global_";
 static std::string CmpLabel0 = "";
 static std::string CmpLabel1 = "";
@@ -58,7 +58,7 @@ void dbc::gen::ASM6502CG::LoadDependencies()
 	}
 	if (UsingMod)
 	{
-		AddLine("__sys_math_mod:\n    pla\n    sta $1002\n    pla\n    sta $1003\n    pla\n    sta $1004\n    pla\n    sec\n__sys_math_mod0:\n    dbc $1004\n    bcs __sys_math_mod0\n    adc $1004\n    pha\n    lda $1003\n    pha\n    lda $1002\n    pha\n    rts");
+		AddLine("__sys_math_mod:\n    pla\n    sta $1002\n    pla\n    sta $1003\n    pla\n    sta $1004\n    pla\n    sec\n__sys_math_mod0:\n    sbc $1004\n    bcs __sys_math_mod0\n    adc $1004\n    pha\n    lda $1003\n    pha\n    lda $1002\n    pha\n    rts");
 	}
 }
 
@@ -370,7 +370,7 @@ std::string dbc::gen::ASM6502CG::GenExprSub(LeafPtr Node)
 	Out += "\tsta tmp\n";
 	Out += "\tpla\n";
 	Out += "\tsec\n";
-	Out += "\tdbc tmp\n";
+	Out += "\tsbc tmp\n";
 	return Out;
 }
 
