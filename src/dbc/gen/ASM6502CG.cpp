@@ -184,15 +184,15 @@ std::string dbc::gen::ASM6502CG::GenConst(LeafPtr Node)
 {
 	if (Node->Type == LeafType::CONST_BOOLEAN)
 	{
-		return GenConstBoolean(Node);
+		return GenConstBoolean(Node) + "\n";
 	}
 	else if (Node->Type == LeafType::CONST_NUMBER)
 	{
-		return GenConstNumber(Node);
+		return GenConstNumber(Node) + "\n";
 	}
 	else if (Node->Type == LeafType::CONST_IDENTIFIER)
 	{
-		return GenConstIdentifier(Node);
+		return GenConstIdentifier(Node) + "\n";
 	}
 	return "";
 }
@@ -205,7 +205,7 @@ std::string dbc::gen::ASM6502CG::GenConstIdentifier(LeafPtr Node)
 	{
 		Out += "; getting global var " + std::string(Node->STRING) + "\n";
 		Addr = GetGlobal(Node->STRING);
-		Out += " $" + NumberToHex<uint16>(Addr);
+		Out += "\tlda $" + NumberToHex<uint16>(Addr);
 	}
 	else
 	{
@@ -611,7 +611,7 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 	++WhileDeep;
 	Out += "; while statement\n";
 	Out += WhileLabel0 + ":\n";
-	GenCode(Node->Right);
+	Out += GenCode(Node->Right);
 	if (IsCompare(Node->Left))
 	{
 		Out += GenExprCompare(Node->Left);

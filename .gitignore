@@ -7,3 +7,6 @@ shinbasic.vcxproj.user
 shinbasic.sdf
 shinbasic.opensdf
 *.s65
+*.user
+*.sdf
+*.opensdf
