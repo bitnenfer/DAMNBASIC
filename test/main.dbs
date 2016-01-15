@@ -1,6 +1,6 @@
 let result = 0
 func main ()
-	while (true)
+	while (result <> 255)
 		result = result + 1
 	end
 end

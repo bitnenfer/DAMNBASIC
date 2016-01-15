@@ -14,6 +14,7 @@ static std::string ScopeName = "global_";
 static std::string CmpLabel0 = "";
 static std::string CmpLabel1 = "";
 static std::string WhileLabel0 = "";
+static std::string WhileLabel1 = "";
 static std::string CurrentFunc = "";
 static bool UsingMul = false;
 static bool UsingDiv = false;
@@ -608,12 +609,15 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 	std::string Out;
 	EnterScope();
 	WhileLabel0 = ScopeName + std::to_string(ScopeDeep) + "_while_" + std::to_string(WhileDeep);
+	WhileLabel1 = ScopeName + std::to_string(ScopeDeep) + "_whileend_" + std::to_string(WhileDeep);
 	++WhileDeep;
 	Out += "; while statement\n";
 	Out += WhileLabel0 + ":\n";
 	Out += GenCode(Node->Right);
 	if (IsCompare(Node->Left))
 	{
+		CmpLabel0 = WhileLabel0;
+		CmpLabel1 = WhileLabel1;
 		Out += GenExprCompare(Node->Left);
 	}
 	else if (IsLogical(Node->Left))
@@ -641,6 +645,7 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 		Out += "\tbeq " + WhileLabel0;
 		Out += "\n";
 	}
+	Out += WhileLabel1 + ":\n";
 	ExitScope();
 	--WhileDeep;
 	return Out;
