@@ -10,12 +10,15 @@ static int16 CurrentVarOffset = 0;
 static uint16 ScopeDeep = 10;
 static uint16 IfDeep = 10;
 static uint16 WhileDeep = 10;
+static uint16 AndCount = 10;
 static std::string ScopeName = "global_";
 static std::string CmpLabel0 = "";
 static std::string CmpLabel1 = "";
 static std::string WhileLabel0 = "";
 static std::string WhileLabel1 = "";
 static std::string CurrentFunc = "";
+static std::string CmpLabelSufix = "";
+static bool ForceJmp = true;
 static bool UsingMul = false;
 static bool UsingDiv = false;
 static bool UsingShl = false;
@@ -267,6 +270,14 @@ std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
 	{
 		return GenExprBitwise(Node);
 	}
+	else if (IsLogical(Node))
+	{
+		return GenExprLogical(Node);
+	}
+	else if (Node->Type == LeafType::EXPR_NEGATE)
+	{
+		return GenExprNegate(Node);
+	}
 	else if (Node->Type == LeafType::EXPR_CALL)
 	{
 		return GenExprCall(Node);
@@ -339,7 +350,12 @@ std::string dbc::gen::ASM6502CG::GenExprCall(LeafPtr Node)
 
 std::string dbc::gen::ASM6502CG::GenExprNegate(LeafPtr Node)
 {
-	return GenCode(Node->Left);
+	std::string Out;
+	Out += GenExpr(Node->Left);
+	Out += "\teor #$FF\n"
+		"\tsec\n"
+		"\tadc #0\n";
+	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenExprMul(LeafPtr Node)
@@ -393,47 +409,85 @@ std::string dbc::gen::ASM6502CG::GenExprSub(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenExprCompare(LeafPtr Node)
 {
 	std::string Out;
-	Out += GenExpr(Node->Left);
-	Out += "\n\tsta tmp\n";
 	Out += GenExpr(Node->Right);
-	Out += "\tcmp tmp\n\t";
+	Out += "\n\tsta tmp\n";
+	Out += GenExpr(Node->Left);
+	Out += "\tcmp tmp\n";
 	if (Node->Type == LeafType::EXPR_CMPEQU)
 	{
-		Out += "beq " + CmpLabel0 + "\n";
-		Out += "\tjmp " + CmpLabel1 + "\n";
+		Out += "\tbeq " + CmpLabel0 + CmpLabelSufix + "\n";
+		if (ForceJmp)
+		{
+			Out += "\tjmp " + CmpLabel1 + "\n";
+		}
 	}
 	else if (Node->Type == LeafType::EXPR_CMPGT)
 	{
-		Out += "beq " + CmpLabel1 + "\n";
-		Out += "\tbcs " + CmpLabel0 + "\n";
+		if (ForceJmp)
+		{
+			Out += "\tbeq " + CmpLabel1 + "\n";
+		}
+		Out += "\tbcs " + CmpLabel0 + CmpLabelSufix + "\n";
 	}
 	else if (Node->Type == LeafType::EXPR_CMPGTEQU)
 	{
-		Out += "bcs " + CmpLabel0 + "\n";
-		Out += "\tjmp " + CmpLabel1 + "\n";
+		Out += "\tbcs " + CmpLabel0 + CmpLabelSufix + "\n";
+		if (ForceJmp)
+		{
+			Out += "\tjmp " + CmpLabel1 + "\n";
+		}
 	}
 	else if (Node->Type == LeafType::EXPR_CMPLT)
 	{
-		Out += "bcc " + CmpLabel0 + "\n";
-		Out += "\tjmp " + CmpLabel1 + "\n";
+		Out += "\tbcc " + CmpLabel0 + CmpLabelSufix + "\n";
+		if (ForceJmp)
+		{
+			Out += "\tjmp " + CmpLabel1 + "\n";
+		}
 	}
 	else if (Node->Type == LeafType::EXPR_CMPLTEQU)
 	{
-		Out += "bcc " + CmpLabel0 + "\n";
-		Out += "\tbeq " + CmpLabel0 + "\n";
-		Out += "\tjmp " + CmpLabel1 + "\n";
+		Out += "\tbcc " + CmpLabel0 + CmpLabelSufix + "\n";
+		Out += "\tbeq " + CmpLabel0 + CmpLabelSufix + "\n";
+		if (ForceJmp)
+		{
+			Out += "\tjmp " + CmpLabel1 + "\n";
+		}
 	}
 	else if (Node->Type == LeafType::EXPR_CMPNOTEQU)
 	{
-		Out += "\tbne " + CmpLabel0 + "\n";
-		Out += "\tjmp " + CmpLabel1 + "\n";
+		Out += "\tbne " + CmpLabel0 + CmpLabelSufix + "\n";
+		if (ForceJmp) 
+		{
+			Out += "\tjmp " + CmpLabel1 + "\n";
+		}
 	}
 	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 {
-	return std::string();
+	std::string Out;
+	if (Node->Type == LeafType::EXPR_AND)
+	{
+		++AndCount;
+		CmpLabelSufix = "_" + std::to_string(AndCount);
+		Out += "; and expression\n";
+		Out += GenExpr(Node->Left);
+		Out += CmpLabel0 + CmpLabelSufix + ":\n";
+		CmpLabelSufix = "";
+		Out += GenExpr(Node->Right);
+		--AndCount;
+	}
+	else if (Node->Type == LeafType::EXPR_OR)
+	{
+		ForceJmp = false;
+		Out += "; or expression\n";
+		Out += GenExpr(Node->Left);
+		Out += GenExpr(Node->Right);
+		Out += "\tjmp " + CmpLabel1 + "\n";
+	}
+	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenExprBitwise(LeafPtr Node)
@@ -537,7 +591,7 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 	while (VarList != nullptr && VarList->Type == LeafType::DECL_VARLIST)
 	{
 		if (VarList->Left != nullptr &&
-			VarList->Left->Type == LeafType::CONST_IDENTIFIER) 
+			VarList->Left->Type == LeafType::CONST_IDENTIFIER)
 		{
 			AddLocal(VarList->Left->STRING);
 			FuncDecl += VarList->Left->STRING;
@@ -732,7 +786,7 @@ std::string dbc::gen::ASM6502CG::GenStmtIf(LeafPtr Node)
 		Out += GenCode(Node->Left);
 		Out += CmpLabel1 + ":\n";
 	}
-	if (Node->Right != nullptr && 
+	if (Node->Right != nullptr &&
 		Node->Right->Right != nullptr)
 	{
 		if (Node->Right->Right->Type == LeafType::STMT_ELSEIF)

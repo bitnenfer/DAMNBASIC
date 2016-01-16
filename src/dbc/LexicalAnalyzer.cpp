@@ -436,7 +436,7 @@ bool dbc::LexicalAnalyzer::ScanWordAnd(TokenPtr & Token)
 {
 	if (ScanKeywordName(KEYWORD_AND))
 	{
-		Token = NewToken(TokenType::WORD_RET);
+		Token = NewToken(TokenType::WORD_AND);
 		return true;
 	}
 	return false;
@@ -445,7 +445,7 @@ bool dbc::LexicalAnalyzer::ScanWordOr(TokenPtr & Token)
 {
 	if (ScanKeywordName(KEYWORD_OR))
 	{
-		Token = NewToken(TokenType::WORD_RET);
+		Token = NewToken(TokenType::WORD_OR);
 		return true;
 	}
 	return false;

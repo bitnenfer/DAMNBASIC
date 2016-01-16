@@ -2,49 +2,49 @@
 
 namespace dbc
 {
-static const char LF = '\n';
-static const char* WORD_DIGIT = "0123456789";
-static const char* WORD_ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-static const char* WORD_BINDIGIT = "01";
-static const char* WORD_HEXDIGIT = "0123456789abcdefABCDEF";
+static constexpr char LF = '\n';
+static constexpr char* WORD_DIGIT = "0123456789";
+static constexpr char* WORD_ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+static constexpr char* WORD_BINDIGIT = "01";
+static constexpr char* WORD_HEXDIGIT = "0123456789abcdefABCDEF";
 
-static const char* KEYWORD_IF = "if";
-static const char* KEYWORD_ELSEIF = "elseif";
-static const char* KEYWORD_ELSE = "else";
-static const char* KEYWORD_FUNC = "func";
-static const char* KEYWORD_RET = "return";
-static const char* KEYWORD_END = "end";
-static const char* KEYWORD_LET = "let";
-static const char* KEYWORD_NOT = "not";
-static const char* KEYWORD_AND = "and";
-static const char* KEYWORD_OR = "or";
-static const char* KEYWORD_IMPORT = "import";
-static const char* KEYWORD_TRUE = "true";
-static const char* KEYWORD_FALSE = "false";
-static const char* KEYWORD_WHILE = "while";
+static constexpr char* KEYWORD_IF = "if";
+static constexpr char* KEYWORD_ELSEIF = "elseif";
+static constexpr char* KEYWORD_ELSE = "else";
+static constexpr char* KEYWORD_FUNC = "func";
+static constexpr char* KEYWORD_RET = "return";
+static constexpr char* KEYWORD_END = "end";
+static constexpr char* KEYWORD_LET = "let";
+static constexpr char* KEYWORD_NOT = "not";
+static constexpr char* KEYWORD_AND = "and";
+static constexpr char* KEYWORD_OR = "or";
+static constexpr char* KEYWORD_IMPORT = "import";
+static constexpr char* KEYWORD_TRUE = "true";
+static constexpr char* KEYWORD_FALSE = "false";
+static constexpr char* KEYWORD_WHILE = "while";
 // modulus
-static const char* KEYWORD_MOD = "mod";
+static constexpr char* KEYWORD_MOD = "mod";
 // shift left
-static const char* KEYWORD_SHL = "shl";
+static constexpr char* KEYWORD_SHL = "shl";
 // shift right
-static const char* KEYWORD_SHR = "shr";
+static constexpr char* KEYWORD_SHR = "shr";
 // bitwise or
-static const char* KEYWORD_BOR = "ior";
+static constexpr char* KEYWORD_BOR = "ior";
 // bitwise exclusive or
-static const char* KEYWORD_XOR = "xor";
+static constexpr char* KEYWORD_XOR = "xor";
 // bitwise and
-static const char* KEYWORD_BAND = "band";
-static const char SYMBOL_LTHAN = '<';
-static const char SYMBOL_GTHAN = '>';
-static const char SYMBOL_COMMA = ',';
-static const char SYMBOL_LPAR = '(';
-static const char SYMBOL_RPAR = ')';
-static const char SYMBOL_DIVSYM = '/';
-static const char SYMBOL_MULSYM = '*';
-static const char SYMBOL_SUBSYM = '-';
-static const char SYMBOL_ADDSYM = '+';
-static const char SYMBOL_EQUAL = '=';
-static const char SYMBOL_WS = ' ';
-static const char SYMBOL_CR = '\r';
-static const char SYMBOL_TAB = '\t';
+static constexpr char* KEYWORD_BAND = "band";
+static constexpr char SYMBOL_LTHAN = '<';
+static constexpr char SYMBOL_GTHAN = '>';
+static constexpr char SYMBOL_COMMA = ',';
+static constexpr char SYMBOL_LPAR = '(';
+static constexpr char SYMBOL_RPAR = ')';
+static constexpr char SYMBOL_DIVSYM = '/';
+static constexpr char SYMBOL_MULSYM = '*';
+static constexpr char SYMBOL_SUBSYM = '-';
+static constexpr char SYMBOL_ADDSYM = '+';
+static constexpr char SYMBOL_EQUAL = '=';
+static constexpr char SYMBOL_WS = ' ';
+static constexpr char SYMBOL_CR = '\r';
+static constexpr char SYMBOL_TAB = '\t';
 } // namespace dbc

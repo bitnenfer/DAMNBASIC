@@ -617,6 +617,7 @@ LeafPtr dbc::SyntaxAnalyzer::ParseExprNegate()
 		{
 			ParseError("Missing expression");
 		}
+		return Negate;
 	}
 	return ParseExprCall();
 }

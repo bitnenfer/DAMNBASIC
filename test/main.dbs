@@ -1,11 +1,5 @@
-let result = 0
+let a = 0
 
-func add(result)
-	while (result <> 255)
-		result = result + 1
-	end
-end
-
-func main ()
-	add(result)
+func main()
+	a = -10
 end
