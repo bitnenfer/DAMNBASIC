@@ -7,6 +7,11 @@
 
 namespace dbc
 {
+enum class GenType
+{
+	ASM6502,
+	NONE
+};
 class CodeGenerator
 {
 public:
@@ -23,6 +28,7 @@ public:
 	virtual std::string GenExprDiv(LeafPtr Node) = 0;
 	virtual std::string GenExprAdd(LeafPtr Node) = 0;
 	virtual std::string GenExprSub(LeafPtr Node) = 0;
+	virtual std::string GenExprNot(LeafPtr Node) = 0;
 	virtual std::string GenExprCompare(LeafPtr Node) = 0;
 	virtual std::string GenExprLogical(LeafPtr Node) = 0;
 	virtual std::string GenExprBitwise(LeafPtr Node) = 0;

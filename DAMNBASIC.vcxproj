@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\DamnBasic.cpp" />
+    <ClCompile Include="src\dbc\Builder.cpp" />
     <ClCompile Include="src\dbc\Debug.cpp" />
     <ClCompile Include="src\dbc\FileLoader.cpp" />
     <ClCompile Include="src\dbc\gen\ASM6502CG.cpp" />
@@ -150,6 +151,8 @@
     <ClCompile Include="src\dbc\SyntaxAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\dbc\ArgsControl.h" />
+    <ClInclude Include="include\dbc\Builder.h" />
     <ClInclude Include="include\dbc\CodeGenerator.h" />
     <ClInclude Include="include\dbc\Common.h" />
     <ClInclude Include="include\dbc\Debug.h" />

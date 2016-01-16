@@ -24,6 +24,7 @@ static bool UsingDiv = false;
 static bool UsingShl = false;
 static bool UsingShr = false;
 static bool UsingMod = false;
+static bool UsingNot = false;
 
 template <typename I> static std::string NumberToHex(I w, size_t hex_len = sizeof(I) << 1)
 {
@@ -127,6 +128,10 @@ void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 
 std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 {
+	if (Node == nullptr)
+	{
+		return "";
+	}
 	if (IsExprGen(Node))
 	{
 		return GenExpr(Node);
@@ -282,6 +287,10 @@ std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
 	{
 		return GenExprCall(Node);
 	}
+	else if (Node->Type == LeafType::EXPR_NOT)
+	{
+		return GenExprNot(Node);
+	}
 	else if (Node->Type == LeafType::EXPR_MOD)
 	{
 		UsingMod = true;
@@ -294,6 +303,15 @@ std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
 		return Out;
 	}
 	return "";
+}
+
+std::string dbc::gen::ASM6502CG::GenExprNot(LeafPtr Node)
+{
+	std::string Out = "; not expression\n";
+	UsingNot = true;
+	Out += GenExpr(Node->Left);
+	UsingNot = false;
+	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenExprCall(LeafPtr Node)

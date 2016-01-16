@@ -161,7 +161,6 @@ bool dbc::LexicalAnalyzer::ScanSymbols(TokenPtr & Token)
 
 bool dbc::LexicalAnalyzer::ScanKeywords(TokenPtr & Token)
 {
-	if (ScanWordNot(Token)) return true;
 	if (ScanWordFunc(Token)) return true;
 	if (ScanWordIf(Token)) return true;
 	if (ScanWordElseIf(Token)) return true;

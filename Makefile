@@ -10,6 +10,7 @@ release: _release softclean
 _release:
 	mkdir -p temp/
 	$(CC) -c src/DamnBasic.cpp $(FLR) -o temp/a.o
+	$(CC) -c src/dbc/Builder.cpp $(FLR) -o temp/b.o
 	$(CC) -c src/dbc/Debug.cpp $(FLR) -o temp/b.o
 	$(CC) -c src/dbc/FileLoader.cpp $(FLR) -o temp/c.o
 	$(CC) -c src/dbc/LexicalAnalyzer.cpp $(FLR) -o temp/d.o
@@ -22,6 +23,7 @@ _release:
 _debug:
 	mkdir -p temp/
 	$(CC) -c src/DamnBasic.cpp $(FLD) -o temp/a.o
+	$(CC) -c src/dbc/Builder.cpp $(FLD) -o temp/b.o
 	$(CC) -c src/dbc/Debug.cpp $(FLD) -o temp/b.o
 	$(CC) -c src/dbc/FileLoader.cpp $(FLD) -o temp/c.o
 	$(CC) -c src/dbc/LexicalAnalyzer.cpp $(FLD) -o temp/d.o

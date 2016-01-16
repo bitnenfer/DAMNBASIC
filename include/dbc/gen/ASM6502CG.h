@@ -19,6 +19,7 @@ public:
 	virtual std::string GenConstBoolean(LeafPtr Node) override;
 	virtual std::string GenConstNumber(LeafPtr Node) override;
 	virtual std::string GenExpr(LeafPtr Node) override;
+	virtual std::string GenExprNot(LeafPtr Node) override;
 	virtual std::string GenExprCall(LeafPtr Node) override;
 	virtual std::string GenExprNegate(LeafPtr Node) override;
 	virtual std::string GenExprMul(LeafPtr Node) override;

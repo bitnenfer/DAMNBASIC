@@ -1,5 +1,6 @@
 let a = 0
 
 func main()
-	a = -10
+	if (a = 2)
+	end
 end
