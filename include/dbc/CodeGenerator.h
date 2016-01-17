@@ -15,7 +15,7 @@ enum class GenType
 class CodeGenerator
 {
 public:
-	virtual void Generate(LeafPtr Node, const char* File, bool IsMain = false, bool Verbose = false) = 0;
+	virtual void Generate(LeafPtr Node, const char* File, bool IsMain = false) = 0;
 	virtual std::string GenCode(LeafPtr Node) = 0;
 	virtual std::string GenConst(LeafPtr Node) = 0;
 	virtual std::string GenConstIdentifier(LeafPtr Node) = 0;

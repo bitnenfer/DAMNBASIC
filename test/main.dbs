@@ -18,6 +18,6 @@ func fib(n)
 end
 
 func main()
-	value0 = fib(4)
+	value0 = fib(10)
 	value1 = fact(4)
 end

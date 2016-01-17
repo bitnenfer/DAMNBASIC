@@ -10,9 +10,9 @@ namespace gen
 class ASM6502CG : public CodeGenerator
 {
 public:
-	ASM6502CG();
+	ASM6502CG(bool Verbose = false);
 	void LoadDependencies();
-	virtual void Generate(LeafPtr Node, const char * File, bool IsMain = false, bool Verbose = false) override;
+	virtual void Generate(LeafPtr Node, const char * File, bool IsMain = false) override;
 	virtual std::string GenCode(LeafPtr Node) override;
 	virtual std::string GenConst(LeafPtr Node) override;
 	virtual std::string GenConstIdentifier(LeafPtr Node) override;

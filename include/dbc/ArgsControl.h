@@ -79,12 +79,12 @@ char* GetExt(GenType Type)
 	}
 	return nullptr;
 }
-CodeGenerator* GetGenerator(GenType Type)
+CodeGenerator* GetGenerator(GenType Type, bool Verbose)
 {
 	switch (Type)
 	{
 		case GenType::ASM6502:
-			return new gen::ASM6502CG();
+			return new gen::ASM6502CG(Verbose);
 			break;
 		case GenType::NONE:
 			break;
