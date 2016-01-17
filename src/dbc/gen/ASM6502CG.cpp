@@ -65,8 +65,9 @@ template <typename I> static std::string NumberToHex(I w, size_t hex_len = sizeo
 	return rc;
 }
 
-dbc::gen::ASM6502CG::ASM6502CG()
+dbc::gen::ASM6502CG::ASM6502CG(bool Verbose)
 {
+	this->Verbose = Verbose;
 	if (Verbose) AddLine("; DAMNBASIC to 6502 assembly code generated.");
 	//AddLine("\t*=$0600");
 	AddLine("\tjmp main");
@@ -101,9 +102,8 @@ void dbc::gen::ASM6502CG::LoadDependencies()
 	}
 }
 
-void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain, bool Verbose)
+void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 {
-	this->Verbose = Verbose;
 	if (IsMain && Verbose)
 	{
 		printf("Generating 6502 Assembly Code...\n");

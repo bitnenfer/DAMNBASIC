@@ -22,7 +22,7 @@ void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain
 		LeafPtr Tree = Parser->Analyze();
 		if (IsMain && Verbose) printf("Semantic Checking...\n");
 		Semant->Analyze(Tree);
-		Generator->Generate(Tree, File, IsMain, Verbose);
+		Generator->Generate(Tree, File, IsMain);
 		TransData += Generator->GetTransSource();
 		Parsers.push_back(Parser);
 		SemanticCheckers.push_back(Semant);
