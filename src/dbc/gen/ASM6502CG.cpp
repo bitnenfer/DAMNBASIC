@@ -677,7 +677,7 @@ std::string dbc::gen::ASM6502CG::GenDeclVar(LeafPtr Node)
 		AddGlobal(Node->Left->STRING);
 		VarDecl += "; global var " + std::string(Node->Left->STRING) + "\n";
 		VarDecl += GenCode(Node->Right);
-		VarDecl += "\n\tsta $" + NumberToHex<uint16_t>(GlobalAddr++) + "\n";
+		VarDecl += "\tsta $" + NumberToHex<uint16_t>(GlobalAddr++) + "\n";
 	}
 	return VarDecl;
 }
@@ -685,7 +685,6 @@ std::string dbc::gen::ASM6502CG::GenDeclVar(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 {
 	InFunction = true;
-	//ScopeName = "local_" + std::string(Node->Left->Left->STRING);
 	PushScope("local_" + std::string(Node->Left->Left->STRING) + "_");
 	CurrentFunc = Node->Left->Left->STRING;
 	std::string FuncDecl = "; func " + CurrentFunc + "(";
