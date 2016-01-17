@@ -518,10 +518,24 @@ std::string dbc::gen::ASM6502CG::GenExprCompare(LeafPtr Node)
 		Out += "\tjmp " + FalseBranch + "\n";
 	}
 	Out += FalseBranch + ":\n";
-	Out += "\tlda #$00\n";
+	if (UsingNot)
+	{
+		Out += "\tlda #$01\n";
+	}
+	else
+	{
+		Out += "\tlda #$00\n";
+	}
 	Out += "\tjmp " + GetScopeName() + "endcmp_" + std::to_string(CmpExprCount) + "\n";
 	Out += TrueBranch + ":\n";
-	Out += "\tlda #$01\n";
+	if (!UsingNot)
+	{
+		Out += "\tlda #$01\n";
+	}
+	else
+	{
+		Out += "\tlda #$00\n";
+	}
 	Out += GetScopeName() + "endcmp_" + std::to_string(CmpExprCount) + ":\n";
 	PopScope();
 	return Out;
@@ -562,10 +576,24 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		Out += "\tjmp " + AndBranchTrue + "\n";
 		--AndExprCount;
 		Out += AndBranchFalse + ":\n";
-		Out += "\tlda #$00\n";
+		if (UsingNot)
+		{
+			Out += "\tlda #$01\n";
+		}
+		else
+		{
+			Out += "\tlda #$00\n";
+		}
 		Out += "\tjmp " + AndEndName + "\n";
 		Out += AndBranchTrue + ":\n";
-		Out += "\tlda #$01\n";
+		if (!UsingNot)
+		{
+			Out += "\tlda #$01\n";
+		}
+		else
+		{
+			Out += "\tlda #$00\n";
+		}
 		PopScope();
 		Out += AndEndName + ":\n";
 	}
@@ -601,10 +629,24 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		Out += "\tjmp " + OrBranchFalse + "\n";
 		--OrExprCount;
 		Out += OrBranchFalse + ":\n";
-		Out += "\tlda #$00\n";
+		if (UsingNot)
+		{
+			Out += "\tlda #$01\n";
+		}
+		else
+		{
+			Out += "\tlda #$00\n";
+		}
 		Out += "\tjmp " + OrEndName + "\n";
 		Out += OrBranchTrue + ":\n";
-		Out += "\tlda #$01\n";
+		if (!UsingNot)
+		{
+			Out += "\tlda #$01\n";
+		}
+		else
+		{
+			Out += "\tlda #$00\n";
+		}
 		PopScope();
 		Out += OrEndName + ":\n";
 	}

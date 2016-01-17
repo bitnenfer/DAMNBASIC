@@ -177,6 +177,7 @@ bool dbc::LexicalAnalyzer::ScanKeywords(TokenPtr & Token)
 	if (ScanWordShr(Token)) return true;
 	if (ScanWordMod(Token)) return true;
 	if (ScanWordWhile(Token)) return true;
+	if (ScanWordNot(Token)) return true;
 	return false;
 }
 

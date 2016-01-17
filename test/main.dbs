@@ -1,23 +1,7 @@
-let value0 = 0
-let value1 = 0
-
-func fact(n)
-	if (n = 0)
-		return 1
-	end
-	return n * fact(n - 1)
-end
-
-func fib(n)
-	if (n = 0) 
-		return 0
-	elseif (n = 1)
-		return 1
-	end
-	return fib(n - 1) + fib(n - 2)
-end
+let x = 0
 
 func main()
-	value0 = fib(10)
-	value1 = fact(4)
+	if (not (1 <> 1))
+		x = 1
+	end
 end

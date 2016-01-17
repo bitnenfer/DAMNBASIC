@@ -98,10 +98,14 @@
 							|
 							<and-expr>
 							;
-<and-expr>				::=	<compare-expr> 'and' <and-expr>
+<and-expr>				::=	<not-expr> 'and' <and-expr>
+							|
+							<not-expr>
+
+<not-expr>				::=	'not' <compare-expr>
 							|
 							<compare-expr>
-					
+
 <compare-expr>			::=	<bitwise-expr> '=' <compare-expr>
 							|
 							<bitwise-expr> '<' <compare-expr>
