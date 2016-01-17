@@ -9,7 +9,7 @@ int main(int argc, const char* argv[])
 {
 	using namespace dbc;
 #if _DEBUG || DEBUG
-	gen::ASM6502CG Generator(true);
+	gen::ASM6502CG Generator(false);
 	Builder::Build("test/main.dbs", &Generator, true, true);
 	Builder::SaveSourceFile("out.s65");
 	Builder::Destoy();

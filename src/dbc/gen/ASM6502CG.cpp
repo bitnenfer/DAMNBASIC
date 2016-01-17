@@ -330,7 +330,8 @@ std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
 	{
 		UsingMod = true;
 		std::string Out;
-		if (Verbose) Out = "; modulus\n" + GenCode(Node->Left);
+		if (Verbose) Out = "; modulus\n";
+		Out += GenCode(Node->Left);
 		Out += "\n\tpha\n";
 		Out += GenCode(Node->Right);
 		Out += "\n\tpha\n";
@@ -354,7 +355,8 @@ std::string dbc::gen::ASM6502CG::GenExprNot(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenExprCall(LeafPtr Node)
 {
 	std::string Out;
-	if (Verbose) Out = ";alloc return\n\tlda #$0\n\tpha\n";
+	if (Verbose) Out = ";alloc return\n";
+	Out += "\tlda #$0\n\tpha\n";
 	LeafPtr ExprList = Node->Right;
 	while (ExprList != nullptr && ExprList->Type == LeafType::EXPR_LIST)
 	{
@@ -419,7 +421,8 @@ std::string dbc::gen::ASM6502CG::GenExprMul(LeafPtr Node)
 {
 	UsingMul = true;
 	std::string Out;
-	if (Verbose) Out = "; multiplication\n" + GenCode(Node->Left);
+	if (Verbose) Out = "; multiplication\n";
+	Out += GenCode(Node->Left);
 	Out += "\n\tpha\n";
 	Out += GenCode(Node->Right);
 	Out += "\n\tpha\n\tclc\n";
@@ -432,7 +435,8 @@ std::string dbc::gen::ASM6502CG::GenExprDiv(LeafPtr Node)
 {
 	UsingDiv = true;
 	std::string Out;
-	if (Verbose) Out = "; divition\n" + GenCode(Node->Left);
+	if (Verbose) Out = "; divition\n";
+	Out += GenCode(Node->Left);
 	Out += "\n\tpha\n";
 	Out += GenCode(Node->Right);
 	Out += "\n\tpha\n\tsec\n";
@@ -444,7 +448,8 @@ std::string dbc::gen::ASM6502CG::GenExprDiv(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenExprAdd(LeafPtr Node)
 {
 	std::string Out;
-	if (Verbose) Out = "; addition\n" + GenCode(Node->Left);
+	if (Verbose) Out = "; addition\n";
+	Out += GenCode(Node->Left);
 	Out += "\tpha\n";
 	Out += GenCode(Node->Right);
 	Out += "\tsta tmp\n";
@@ -457,7 +462,8 @@ std::string dbc::gen::ASM6502CG::GenExprAdd(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenExprSub(LeafPtr Node)
 {
 	std::string Out;
-	if (Verbose) Out = "; subraction\n" + GenCode(Node->Left);
+	if (Verbose) Out = "; subraction\n";
+	Out += GenCode(Node->Left);
 	Out += "\tpha\n";
 	Out += GenCode(Node->Right);
 	Out += "\tsta tmp\n";
@@ -601,7 +607,7 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		Out += "\tlda #$01\n";
 		PopScope();
 		Out += OrEndName + ":\n";
-	}	
+	}
 	return Out;
 }
 
@@ -704,26 +710,23 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 	if (Verbose) FuncDecl = "; func " + CurrentFunc + "(";
 	LeafPtr VarList = Node->Left->Right;
 	CurrentReturnOffset = 4;
-	if (Verbose)
+	while (VarList != nullptr && VarList->Type == LeafType::DECL_VARLIST)
 	{
-		while (VarList != nullptr && VarList->Type == LeafType::DECL_VARLIST)
+		if (VarList->Left != nullptr &&
+			VarList->Left->Type == LeafType::CONST_IDENTIFIER)
 		{
-			if (VarList->Left != nullptr &&
-				VarList->Left->Type == LeafType::CONST_IDENTIFIER)
-			{
-				AddLocal(VarList->Left->STRING, false);
-				FuncDecl += VarList->Left->STRING;
-				++CurrentReturnOffset;
-			}
-			VarList = VarList->Right;
-			if (VarList != nullptr &&
-				VarList->Left != nullptr)
-			{
-				FuncDecl += ", ";
-			}
+			AddLocal(VarList->Left->STRING, false);
+			if (Verbose) FuncDecl += VarList->Left->STRING;
+			++CurrentReturnOffset;
 		}
-		FuncDecl += ")\n";
+		VarList = VarList->Right;
+		if (VarList != nullptr &&
+			VarList->Left != nullptr)
+		{
+			if (Verbose) FuncDecl += ", ";
+		}
 	}
+	if (Verbose) FuncDecl += ")\n";
 	FuncDecl += "func_" + CurrentFunc + ":\n";
 	EnterScope();
 	// Prologue
@@ -859,7 +862,7 @@ std::string dbc::gen::ASM6502CG::GenStmtIf(LeafPtr Node)
 		{
 			Out += "\tbeq " + GetScopeName() + "elseif_check" + std::to_string(ElseIfCount) + "\n";
 		}
-		else if(Node->Right->Right->Type == LeafType::STMT_ELSE)
+		else if (Node->Right->Right->Type == LeafType::STMT_ELSE)
 		{
 			Out += "\tbeq " + GetScopeName() + "else_body" + std::to_string(IfCount) + "\n";
 		}
