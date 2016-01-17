@@ -40,6 +40,8 @@ public:
 	virtual std::string GenStmtWhile(LeafPtr Node) = 0;
 	virtual std::string GenStmtAssign(LeafPtr Node) = 0;
 	virtual std::string GenStmtIf(LeafPtr Node) = 0;
+	virtual std::string GenStmtElseIf(LeafPtr Node) = 0;
+	virtual std::string GenStmtElse(LeafPtr Node) = 0;
 	inline std::string GetTransSource()
 	{
 		return Join();

@@ -37,10 +37,14 @@ public:
 	virtual std::string GenStmtWhile(LeafPtr Node) override;
 	virtual std::string GenStmtAssign(LeafPtr Node) override;
 	virtual std::string GenStmtIf(LeafPtr Node) override;
+	virtual std::string GenStmtElseIf(LeafPtr Node) override;
+	virtual std::string GenStmtElse(LeafPtr Node) override;
+	std::string GenExprCheck(LeafPtr Node);
+
 
 protected:
 	void AddGlobal(char* VarName);
-	void AddLocal(char* VarName);
+	void AddLocal(char* VarName, bool Local);
 	int16 GetGlobal(char* VarName);
 	int16 GetLocal(char* VarName);
 	void EnterScope();
@@ -53,12 +57,14 @@ private:
 	std::unordered_map<std::string, int16> GlobalVariables;
 	struct LocalVar
 	{
-		LocalVar(char* VarName, int16 Offset) :
+		LocalVar(char* VarName, int16 Offset, bool Local) :
 			VarName(VarName),
-			Offset(Offset)
+			Offset(Offset),
+			Local(Local)
 		{}
 		char* VarName;
 		int16 Offset;
+		bool Local;
 	};
 	struct VarScope
 	{

@@ -1,6 +1,7 @@
-let a = 0
+let n = 0
 
 func main()
-	if (a = 2)
+	if (2 = 2 and 2 = 2 and 2 = 3)
+		n = 1
 	end
 end
