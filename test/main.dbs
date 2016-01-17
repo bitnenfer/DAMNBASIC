@@ -1,7 +1,23 @@
-let n = 0
+let value0 = 0
+let value1 = 0
+
+func fact(n)
+	if (n = 0)
+		return 1
+	end
+	return n * fact(n - 1)
+end
+
+func fib(n)
+	if (n = 0) 
+		return 0
+	elseif (n = 1)
+		return 1
+	end
+	return fib(n - 1) + fib(n - 2)
+end
 
 func main()
-	if (2 = 2 and 2 = 2 and 2 = 3)
-		n = 1
-	end
+	value0 = fib(4)
+	value1 = fact(4)
 end

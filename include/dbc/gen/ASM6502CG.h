@@ -12,7 +12,7 @@ class ASM6502CG : public CodeGenerator
 public:
 	ASM6502CG();
 	void LoadDependencies();
-	virtual void Generate(LeafPtr Node, const char * File, bool IsMain = false) override;
+	virtual void Generate(LeafPtr Node, const char * File, bool IsMain = false, bool Verbose = false) override;
 	virtual std::string GenCode(LeafPtr Node) override;
 	virtual std::string GenConst(LeafPtr Node) override;
 	virtual std::string GenConstIdentifier(LeafPtr Node) override;
@@ -51,6 +51,7 @@ protected:
 	void ExitScope();
 
 private:
+	bool Verbose = false;
 	bool ScanningGlobals = false;
 	bool InFunction = false;
 	int16 GlobalAddr = 0x1010;
