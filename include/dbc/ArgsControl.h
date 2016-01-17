@@ -17,13 +17,13 @@ enum class Command
 	NONE
 };
 
-constexpr char* COMMAND_ADDFILE = "-i";
-constexpr char* COMMAND_VERBOSE = "-v";
-constexpr char* COMMAND_TARGET = "-t";
-constexpr char* COMMAND_OUTPUT = "-o";
-constexpr char* COMMAND_HELP = "-h";
+constexpr char COMMAND_ADDFILE[] = "-i";
+constexpr char COMMAND_VERBOSE[] = "-v";
+constexpr char COMMAND_TARGET[] = "-t";
+constexpr char COMMAND_OUTPUT[] = "-o";
+constexpr char COMMAND_HELP[] = "-h";
 
-constexpr char* TYPE_ASM65 = "6502";
+constexpr char TYPE_ASM65[] = "6502";
 
 Command GeCommand(const char* Arg)
 {
@@ -65,7 +65,7 @@ GenType GetGenType(const char* Arg)
 	}
 	return GenType::NONE;
 }
-char* GetExt(GenType Type)
+const char* GetExt(GenType Type)
 {
 	switch (Type)
 	{
@@ -79,7 +79,7 @@ char* GetExt(GenType Type)
 	}
 	return nullptr;
 }
-CodeGenerator* GetGenerator(GenType Type, bool Verbose)
+CodeGenerator* GetGenerator(GenType Type, bool Verbose = false)
 {
 	switch (Type)
 	{
