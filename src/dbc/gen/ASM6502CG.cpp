@@ -29,6 +29,7 @@ static bool UsingShl = false;
 static bool UsingShr = false;
 static bool UsingMod = false;
 static bool UsingNot = false;
+static LeafPtr StaticLeafPtr = nullptr;
 
 static std::vector<std::string> ScopeNameStack;
 
@@ -118,6 +119,7 @@ void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 	{
 		if (Current->Left != nullptr && Current->Left->Type == LeafType::DECL_VAR)
 		{
+			StaticLeafPtr = Current->Left;
 			AddLine(GenDeclVar(Current->Left));
 		}
 
@@ -135,6 +137,8 @@ void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 	if (IsMain)
 	{
 		AddLine("\tjsr func_main");
+		if (Verbose) AddLine("; store return value of main at accumulator");
+		AddLine("\tpla");
 		AddLine("\tbrk");
 	}
 	Current = Node;
@@ -142,6 +146,7 @@ void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 	CurrentVarOffset = 0;
 	while (Current != nullptr && Current->Type != LeafType::ENDOFFILE)
 	{
+		StaticLeafPtr = Current->Left;
 		AddLine(GenCode(Current->Left));
 		if (Current->Right != nullptr)
 		{
@@ -166,6 +171,7 @@ std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 	{
 		return "";
 	}
+	StaticLeafPtr = Node;
 	if (IsExprGen(Node))
 	{
 		return GenExpr(Node);
@@ -838,7 +844,6 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 	PopScope();
 	ExitScope();
 	Out += "\tjmp " + WhileName + "\n";
-	ExitScope();
 	--WhileCount;
 	Out += GetScopeName() + "end_while" + std::to_string(WhileCount) + ":\n";
 	PopScope();
@@ -1037,7 +1042,7 @@ std::string dbc::gen::ASM6502CG::GenExprCheck(LeafPtr Node)
 
 void dbc::gen::ASM6502CG::AddGlobal(char * VarName)
 {
-	if (GetGlobal(VarName) == -1)
+	if (GetGlobal(VarName, false) == -1)
 	{
 		GlobalVariables[VarName] = GlobalAddr;
 	}
@@ -1051,7 +1056,7 @@ void dbc::gen::ASM6502CG::AddLocal(char * VarName, bool Local)
 	}
 }
 
-int16 dbc::gen::ASM6502CG::GetGlobal(char * VarName)
+int16 dbc::gen::ASM6502CG::GetGlobal(char * VarName, bool YieldError)
 {
 	for (auto iter : GlobalVariables)
 	{
@@ -1059,6 +1064,16 @@ int16 dbc::gen::ASM6502CG::GetGlobal(char * VarName)
 		{
 			return GlobalVariables[VarName];
 		}
+	}
+	if (YieldError)
+	{
+		if (StaticLeafPtr != nullptr)
+		{
+			fprintf(stderr, "At Line %lu, ", static_cast<unsigned long int>(StaticLeafPtr->Line));
+		}
+		fprintf(stderr, "Code Generation Error: Undefined global variable %s\n", VarName);
+		PAUSE;
+		exit(-1);
 	}
 	return -1;
 }

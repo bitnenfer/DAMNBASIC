@@ -45,7 +45,7 @@ public:
 protected:
 	void AddGlobal(char* VarName);
 	void AddLocal(char* VarName, bool Local);
-	int16 GetGlobal(char* VarName);
+	int16 GetGlobal(char* VarName, bool YieldError = true);
 	int16 GetLocal(char* VarName);
 	void EnterScope();
 	void ExitScope();
