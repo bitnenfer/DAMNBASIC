@@ -868,7 +868,7 @@ std::string dbc::gen::ASM6502CG::GenStmtAssign(LeafPtr Node)
 		Out += "\tsta tmp\n";
 		if (GotOnScope)
 		{
-			Out += "\tlda #$" + NumberToHex<uint8>(0xFF - Addr);
+			Out += "\tlda #$" + NumberToHex<uint8>(0xFF + Addr);
 		}
 		else
 		{
@@ -1052,7 +1052,7 @@ void dbc::gen::ASM6502CG::AddLocal(char * VarName, bool Local)
 {
 	if (CurrentScope != nullptr)
 	{
-		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size()), Local));
+		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size() + 1), Local));
 	}
 }
 

@@ -1,9 +1,17 @@
-let x = 0
-let y = 0
-let z = 0
+let a = 0
+
+func do()
+	let b = 5
+	let c = 6
+	if (b = 5)
+		a = 1
+	else
+		a = 2
+	end
+end
 
 func giveme255()
-	let n = 0
+	let n = 10
 	while (true)
 		if (n < 255)
 			n = n + 1
@@ -13,24 +21,6 @@ func giveme255()
 	end
 end
 
-func factorial(n)
-	if (n = 0)
-		return 1
-	end
-	return n * factorial(n - 1)
-end
-
-func fibonacci(n)
-	if (n = 0)
-		return 0
-	elseif (n = 1)
-		return 1
-	end
-	return fibonacci(n - 1) + fibonacci(n - 2)
-end
-
 func main()
-	x = giveme255()
-	z = fibonacci(10)
-	y = factorial(4)
+	a = giveme255()
 end
