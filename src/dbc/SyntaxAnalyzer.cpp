@@ -26,7 +26,7 @@ using namespace dbc;
 
 #define ParseError(Message, ...) \
 	fprintf(stderr, "\n%s ", SourcePath); \
-	if (CurrentToken != nullptr) fprintf(stderr, "Line: %zu - Parsing Error: ", static_cast<unsigned long int>(CurrentToken->Line));\
+	if (CurrentToken != nullptr) fprintf(stderr, "Line: %llu - Parsing Error: ", CurrentToken->Line);\
 	fprintf(stderr, Message, ##__VA_ARGS__); \
 	PAUSE; \
 	exit(-1);
