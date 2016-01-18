@@ -119,11 +119,39 @@ void dbc::SemanticAnalyzer::AnalyzeNode(LeafPtr Current)
 				SemantError("Invalid function call");
 			}
 		}
+		else if (Current->Type == LeafType::STMT_RETURN)
+		{
+			if (!CheckReturn(Current))
+			{
+				SemantError("Invalid return statement");
+			}
+		}
+		else if (IsBitwise(Current) ||
+				 IsLogical(Current) || 
+				 Current->Type == LeafType::EXPR_MOD)
+		{
+			if (!CheckLHSnRHS(Current))
+			{
+				SemantError("Invalid Expression");
+			}
+		}
 	}
 }
 bool dbc::SemanticAnalyzer::CheckVarDecl(LeafPtr Current)
 {
-	return true;
+	if (IsExpr(Current->Right))
+	{
+		return CheckExpr(Current->Right);
+	}
+	else if (IsConst(Current->Right))
+	{
+		return CheckFactor(Current->Right);
+	}
+	else if (Current->Right->Type == LeafType::EXPR_CALL)
+	{
+		return CheckCall(Current->Right);
+	}
+	return false;
 }
 bool dbc::SemanticAnalyzer::CheckFuncDecl(LeafPtr Current)
 {
@@ -250,6 +278,34 @@ bool dbc::SemanticAnalyzer::CheckCall(LeafPtr Current)
 					FuncDecl->Left->Left->STRING, static_cast<long unsigned int>(DeclCount), static_cast<long unsigned int>(CallCount));
 	}
 	return true;
+}
+bool dbc::SemanticAnalyzer::CheckReturn(LeafPtr Current)
+{
+	return CheckBase(Current->Left);
+}
+bool dbc::SemanticAnalyzer::CheckLHSnRHS(LeafPtr Current)
+{
+	if (CheckBase(Current->Left))
+	{
+		return (CheckBase(Current->Right));
+	}
+	return false;
+}
+bool dbc::SemanticAnalyzer::CheckBase(LeafPtr Current)
+{
+	if (IsExpr(Current))
+	{
+		return CheckExpr(Current);
+	}
+	else if (IsConst(Current))
+	{
+		return CheckFactor(Current);
+	}
+	else if (Current->Type == LeafType::EXPR_CALL)
+	{
+		return CheckCall(Current);
+	}
+	return false;
 }
 void dbc::SemanticAnalyzer::EnterScope()
 {

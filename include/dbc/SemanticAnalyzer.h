@@ -19,6 +19,9 @@ protected:
 	bool CheckFactor(LeafPtr Current);
 	bool CheckExpr(LeafPtr Current);
 	bool CheckCall(LeafPtr Current);
+	bool CheckReturn(LeafPtr Current);
+	bool CheckLHSnRHS(LeafPtr Current);
+	bool CheckBase(LeafPtr Current);
 
 	void EnterScope();
 	void ExitScope();
