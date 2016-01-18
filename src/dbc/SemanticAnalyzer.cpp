@@ -243,7 +243,7 @@ bool dbc::SemanticAnalyzer::CheckCall(LeafPtr Current)
 	LeafPtr FuncDecl = FindSymbol(Current);
 	if (FuncDecl == nullptr)
 	{
-		SemantError("Calling undefined function %s", Current->Left->Left->STRING);
+		SemantError("Calling undefined function %s", Current->Left->STRING);
 	}
 	uint64 DeclCount = 0;
 	uint64 CallCount = 0;
