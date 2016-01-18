@@ -73,9 +73,9 @@ dbc::gen::ASM6502CG::ASM6502CG(bool Verbose)
 	if (Verbose) AddLine("; Setting origin to $0600");
 	AddLine("\t*=$0600");
 	AddLine("\tjmp main");
-	AddLine("\tbase_pointer = $1000\n"
-			"\tstack_tail = $0100\n"
-			"\ttmp = $1001");
+	// base_pointer = $1000
+	// stack_tail = $0100
+	// tmp = $1001
 	AddLine("main:\n");
 	PushScope("global_");
 }
@@ -269,9 +269,9 @@ std::string dbc::gen::ASM6502CG::GenConstIdentifier(LeafPtr Node)
 			Out += "\tlda #$" + NumberToHex<uint8>(4 + Addr);
 		}
 		Out += "\n\tclc\n"
-			"\tadc base_pointer\n"
+			"\tadc $1000\n"
 			"\ttax\n"
-			"\tlda stack_tail, x";
+			"\tlda $0100, x";
 	}
 	return Out;
 }
@@ -458,10 +458,10 @@ std::string dbc::gen::ASM6502CG::GenExprAdd(LeafPtr Node)
 	Out += GenCode(Node->Left);
 	Out += "\tpha\n";
 	Out += GenCode(Node->Right);
-	Out += "\tsta tmp\n";
+	Out += "\tsta $1001\n";
 	Out += "\tpla\n";
 	Out += "\tclc\n";
-	Out += "\tadc tmp\n";
+	Out += "\tadc $1001\n";
 	return Out;
 }
 
@@ -472,10 +472,10 @@ std::string dbc::gen::ASM6502CG::GenExprSub(LeafPtr Node)
 	Out += GenCode(Node->Left);
 	Out += "\tpha\n";
 	Out += GenCode(Node->Right);
-	Out += "\tsta tmp\n";
+	Out += "\tsta $1001\n";
 	Out += "\tpla\n";
 	Out += "\tsec\n";
-	Out += "\tsbc tmp\n";
+	Out += "\tsbc $1001\n";
 	return Out;
 }
 
@@ -485,10 +485,10 @@ std::string dbc::gen::ASM6502CG::GenExprCompare(LeafPtr Node)
 	++CmpExprCount;
 	std::string Out;
 	Out += GenExpr(Node->Right);
-	Out += "\tsta tmp\n";
+	Out += "\tsta $1001\n";
 	Out += GenExpr(Node->Left);
 	Out += "\tclc\n";
-	Out += "\tcmp tmp\n";
+	Out += "\tcmp $1001\n";
 	--CmpExprCount;
 	std::string TrueBranch = GetScopeName() + "true_" + std::to_string(CmpExprCount);
 	std::string FalseBranch = GetScopeName() + "false_" + std::to_string(CmpExprCount);
@@ -565,9 +565,9 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		PopScope();
 		if (Verbose) Out += ";check lhs and expr is valid\n";
 		Out += "\tldx #$00\n";
-		Out += "\tstx tmp\n";
+		Out += "\tstx $1001\n";
 		Out += "\tclc\n";
-		Out += "\tcmp tmp\n";
+		Out += "\tcmp $1001\n";
 		Out += "\tbeq " + AndBranchFalse + "\n";
 		// check rhs or expr is valid
 		PushScope("rhs_");
@@ -575,9 +575,9 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		PopScope();
 		if (Verbose) Out += ";check rhs and expr is valid\n";
 		Out += "\tldx #$00\n";
-		Out += "\tstx tmp\n";
+		Out += "\tstx $1001\n";
 		Out += "\tclc\n";
-		Out += "\tcmp tmp\n";
+		Out += "\tcmp $1001\n";
 		Out += "\tbeq " + AndBranchFalse + "\n";
 		Out += "\tjmp " + AndBranchTrue + "\n";
 		--AndExprCount;
@@ -618,9 +618,9 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		PopScope();
 		if (Verbose) Out += ";check lhs or expr is valid\n";
 		Out += "\tldx #$00\n";
-		Out += "\tstx tmp\n";
+		Out += "\tstx $1001\n";
 		Out += "\tclc\n";
-		Out += "\tcmp tmp\n";
+		Out += "\tcmp $1001\n";
 		Out += "\tbne " + OrBranchTrue + "\n";
 		// check rhs or expr is valid
 		PushScope("rhs_");
@@ -628,9 +628,9 @@ std::string dbc::gen::ASM6502CG::GenExprLogical(LeafPtr Node)
 		PopScope();
 		if (Verbose) Out += ";check rhs or expr is valid\n";
 		Out += "\tldx #$00\n";
-		Out += "\tstx tmp\n";
+		Out += "\tstx $1001\n";
 		Out += "\tclc\n";
-		Out += "\tcmp tmp\n";
+		Out += "\tcmp $1001\n";
 		Out += "\tbne " + OrBranchTrue + "\n";
 		Out += "\tjmp " + OrBranchFalse + "\n";
 		--OrExprCount;
@@ -690,27 +690,27 @@ std::string dbc::gen::ASM6502CG::GenExprBitwise(LeafPtr Node)
 	{
 		if (Verbose) Out += "; bitwise and\n";
 		Out += GenCode(Node->Right);
-		Out += "\n\tsta tmp\n";
+		Out += "\n\tsta $1001\n";
 		Out += GenCode(Node->Left);
-		Out += "\n\tand tmp\n";
+		Out += "\n\tand $1001\n";
 		return Out;
 	}
 	else if (Node->Type == LeafType::EXPR_BOR)
 	{
 		if (Verbose) Out += "; bitwise or\n";
 		Out += GenCode(Node->Right);
-		Out += "\n\tsta tmp\n";
+		Out += "\n\tsta $1001\n";
 		Out += GenCode(Node->Left);
-		Out += "\n\tora tmp\n";
+		Out += "\n\tora $1001\n";
 		return Out;
 	}
 	else if (Node->Type == LeafType::EXPR_XOR)
 	{
 		if (Verbose) Out += "; bitwise exclusive or\n";
 		Out += GenCode(Node->Right);
-		Out += "\n\tsta tmp\n";
+		Out += "\n\tsta $1001\n";
 		Out += GenCode(Node->Left);
-		Out += "\n\teor tmp\n";
+		Out += "\n\teor $1001\n";
 		return Out;
 	}
 	return Out;
@@ -778,7 +778,12 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 	FuncDecl += "func_" + CurrentFunc + ":\n";
 	EnterScope();
 	// Prologue
-	FuncDecl += ".byte $AD, $00, $10, $48, $BA, $8E, $00, $10\n";
+	if (Verbose) FuncDecl += "; start prologue\n";
+	FuncDecl += "\tlda $1000\n";
+	FuncDecl += "\tpha\n";
+	FuncDecl += "\ttsx\n";
+	FuncDecl += "\tstx $1000\n";
+	if (Verbose) FuncDecl += "; end prologue\n";
 	if (Verbose) FuncDecl += "; function body start\n";
 	if (Node->Right != nullptr)
 	{
@@ -787,7 +792,13 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 	// Epilogue
 	if (Verbose) FuncDecl += "\n; function body end\n";
 	FuncDecl += "func_end_" + CurrentFunc + ":\n";
-	FuncDecl += ".byte $AE, $00, $10, $9A, $68, $8D, $00, $10, $60\n";
+	if (Verbose) FuncDecl += "; start epilogue\n";
+	FuncDecl += "\tldx $1000\n";
+	FuncDecl += "\ttxs\n";
+	FuncDecl += "\tpla\n";
+	FuncDecl += "\tsta $1000\n";
+	FuncDecl += "\trts\n";
+	if (Verbose) FuncDecl += "; end epilogue\n";
 	ExitScope();
 	InFunction = false;
 	PopScope();
@@ -807,12 +818,12 @@ std::string dbc::gen::ASM6502CG::GenStmtReturn(LeafPtr Node)
 	Out += "\ttay\n";
 	if (Verbose) Out += "; store it at return space.\n";
 
-	Out += "\tlda #" + NumberToHex<uint8>(static_cast<uint8>(CurrentReturnOffset));
+	Out += "\tlda #$" + NumberToHex<uint8>(static_cast<uint8>(CurrentReturnOffset));
 	Out += "\n\tclc\n"
-		"\tadc base_pointer\n"
+		"\tadc $1000\n"
 		"\ttax\n"
 		"\ttya\n"
-		"\tsta stack_tail, x\n"
+		"\tsta $0100, x\n"
 		"\tjmp func_end_" + CurrentFunc + "\n";
 	return Out;
 }
@@ -831,8 +842,8 @@ std::string dbc::gen::ASM6502CG::GenStmtWhile(LeafPtr Node)
 	PopScope();
 	// end of check
 	Out += "\tldx #$00\n";
-	Out += "\tstx tmp\n";
-	Out += "\tcmp tmp\n";
+	Out += "\tstx $1001\n";
+	Out += "\tcmp $1001\n";
 	Out += "\tbeq " + GetScopeName() + "end_while" + std::to_string(WhileCount) + "\n";
 	++WhileCount;
 	// output body
@@ -865,7 +876,7 @@ std::string dbc::gen::ASM6502CG::GenStmtAssign(LeafPtr Node)
 	{
 		Out += GenCode(Node->Right);
 		if (Verbose) Out += "; setting local var " + std::string(Node->Left->STRING) + "\n";
-		Out += "\tsta tmp\n";
+		Out += "\tsta $1001\n";
 		if (GotOnScope)
 		{
 			Out += "\tlda #$" + NumberToHex<uint8>(0xFF + Addr);
@@ -875,10 +886,10 @@ std::string dbc::gen::ASM6502CG::GenStmtAssign(LeafPtr Node)
 			Out += "\tlda #$" + NumberToHex<uint8>(4 + Addr);
 		}
 		Out += "\n\tclc\n"
-			"\tadc base_pointer\n"
+			"\tadc $1000\n"
 			"\ttax\n"
-			"\tlda tmp\n"
-			"\tsta stack_tail, x";
+			"\tlda $1001\n"
+			"\tsta $0100, x";
 	}
 	return Out + "\n";
 }
@@ -896,8 +907,8 @@ std::string dbc::gen::ASM6502CG::GenStmtIf(LeafPtr Node)
 	PopScope();
 	// end of check
 	Out += "\tldx #$00\n";
-	Out += "\tstx tmp\n";
-	Out += "\tcmp tmp\n";
+	Out += "\tstx $1001\n";
+	Out += "\tcmp $1001\n";
 	++IfCount;
 	if (Node->Right->Right == nullptr)
 	{
@@ -954,8 +965,8 @@ std::string dbc::gen::ASM6502CG::GenStmtElseIf(LeafPtr Node)
 	PopScope();
 	// end of check
 	Out += "\tldx #0\n";
-	Out += "\tstx tmp\n";
-	Out += "\tcmp tmp\n";
+	Out += "\tstx $1001\n";
+	Out += "\tcmp $1001\n";
 	++ElseIfCount;
 	if (Node->Right->Right == nullptr)
 	{
@@ -1052,7 +1063,7 @@ void dbc::gen::ASM6502CG::AddLocal(char * VarName, bool Local)
 {
 	if (CurrentScope != nullptr)
 	{
-		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size() + 1), Local));
+		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size() + Local ? 1 : 0), Local));
 	}
 }
 
