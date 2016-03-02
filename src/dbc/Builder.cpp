@@ -1,4 +1,6 @@
 #include <dbc/Builder.h>
+#include <algorithm>
+#include <string>
 #include <cstdio>
 
 using namespace dbc;
@@ -36,6 +38,7 @@ void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain
 
 void dbc::Builder::SaveSourceFile(const char* OutputFileName)
 {
+	std::transform(Builder::TransData.begin(), Builder::TransData.end(), Builder::TransData.begin(), ::toupper);
 	SaveFile(OutputFileName, Builder::TransData);
 }
 
