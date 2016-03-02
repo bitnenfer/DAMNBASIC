@@ -1,6 +1,6 @@
 let x = 0
 func main()
-	# Get the first element on the stack
+	# Get the first element on screen memory
 	# and store it on our global variable x
-	x = [511] # 01FF
+	x = [1024] # $0400
 end
