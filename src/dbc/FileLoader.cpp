@@ -22,3 +22,14 @@ std::string dbc::LoadFile(const char *Path)
 	File.close();
 	return str + "\n";
 }
+
+void dbc::SaveBinaryFile(const char * Path, std::vector<unsigned char>& BinData)
+{
+	std::ofstream File;
+	File.open(Path, std::ios::trunc | std::ios::out | std::ios::binary);
+	for (unsigned char byte : BinData)
+	{
+		File << byte;
+	}
+	File.close();
+}

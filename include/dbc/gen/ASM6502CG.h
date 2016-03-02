@@ -43,19 +43,89 @@ public:
 
 
 protected:
+	template <typename I> static std::string NumberToHex(I w, size_t hex_len = sizeof(I) << 1)
+	{
+		static const char* digits = "0123456789ABCDEF";
+		std::string rc(hex_len, '0');
+		for (size_t i = 0, j = (hex_len - 1) * 4; i < hex_len; ++i, j -= 4)
+			rc[i] = digits[(w >> j) & 0x0f];
+		return rc;
+	}
 	void AddGlobal(char* VarName);
 	void AddLocal(char* VarName, bool Local);
 	int16 GetGlobal(char* VarName, bool YieldError = true);
 	int16 GetLocal(char* VarName);
 	void EnterScope();
 	void ExitScope();
+	inline std::string GetLabelId(std::string&& label)
+	{
+		std::unordered_map<std::string, int16>::const_iterator iter = Labels.find(label);
+		if (iter != Labels.end())
+		{
+			return "L" + NumberToHex<uint16>(iter->second);
+		}
+		return "error";
+	}
+	inline std::string GetLabelId(std::string& label)
+	{
+		std::unordered_map<std::string, int16>::const_iterator iter = Labels.find(label);
+		if (iter != Labels.end())
+		{
+			return "L" + NumberToHex<uint16>(iter->second);
+		}
+		return "error";
+	}
+	inline void AddLabel(std::string& label)
+	{
+		std::unordered_map<std::string, int16>::const_iterator iter = Labels.find(label);
+		if (iter == Labels.end())
+		{
+			Labels[label] = LabelId++;
+		}		
+	}
+
+	inline void AddLabel(std::string&& label)
+	{
+		std::unordered_map<std::string, int16>::const_iterator iter = Labels.find(label);
+		if (iter == Labels.end())
+		{
+			Labels[label] = LabelId++;
+		}
+	}
+
+	inline void PushScope(std::string Name)
+	{
+		ScopeNameStack.push_back(Name);
+	}
+
+	inline void PopScope()
+	{
+		ScopeNameStack.pop_back();
+	}
+
+	inline std::string GetScopeName()
+	{
+		if (ScopeNameStack.size() > 0)
+		{
+			std::string Out;
+			for (std::string& Scope : ScopeNameStack)
+			{
+				Out += Scope;
+			}
+			return Out;
+		}
+		return "global";
+	}
 
 private:
 	bool Verbose = false;
 	bool ScanningGlobals = false;
 	bool InFunction = false;
-	int16 GlobalAddr = 0x1010;
+	int16 GlobalAddr = 0x2010;
 	std::unordered_map<std::string, int16> GlobalVariables;
+	std::unordered_map<std::string, int16> Labels;
+	std::vector<std::string> ScopeNameStack;
+	int LabelId = 0;
 	struct LocalVar
 	{
 		LocalVar(char* VarName, int16 Offset, bool Local) :

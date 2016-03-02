@@ -14,6 +14,7 @@ enum class Command
 	TARGET,
 	OUTPUT,
 	HELP,
+	ASMOUT,
 	NONE
 };
 
@@ -22,6 +23,7 @@ constexpr char COMMAND_VERBOSE[] = "-v";
 constexpr char COMMAND_TARGET[] = "-t";
 constexpr char COMMAND_OUTPUT[] = "-o";
 constexpr char COMMAND_HELP[] = "-h";
+constexpr char COMMAND_ASMOUT[] = "-s";
 
 constexpr char TYPE_ASM65[] = "6502";
 
@@ -51,6 +53,10 @@ Command GeCommand(const char* Arg)
 	{
 		return Command::OUTPUT;
 	}
+	else if (strcmp(Arg, COMMAND_ASMOUT) == 0)
+	{
+		return Command::ASMOUT;
+	}
 	return Command::NONE;
 }
 GenType GetGenType(const char* Arg)
@@ -61,7 +67,7 @@ GenType GetGenType(const char* Arg)
 	}
 	else if (strcmp(Arg, TYPE_ASM65) == 0)
 	{
-		return GenType::ASM6502;
+		return GenType::ASM6502_BUILD;
 	}
 	return GenType::NONE;
 }
@@ -69,7 +75,10 @@ const char* GetExt(GenType Type)
 {
 	switch (Type)
 	{
-		case GenType::ASM6502:
+		case GenType::ASM6502_BUILD:
+			return "prg";
+			break;
+		case GenType::ASM6502_SRC:
 			return "asm";
 			break;
 		case GenType::NONE:
@@ -83,7 +92,7 @@ CodeGenerator* GetGenerator(GenType Type, bool Verbose = false)
 {
 	switch (Type)
 	{
-		case GenType::ASM6502:
+		case GenType::ASM6502_BUILD:
 			return new gen::ASM6502CG(Verbose);
 			break;
 		case GenType::NONE:

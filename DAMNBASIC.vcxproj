@@ -142,6 +142,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\DamnBasic.cpp" />
+    <ClCompile Include="src\dasm\Emitter.cpp" />
+    <ClCompile Include="src\dasm\Parser.cpp" />
+    <ClCompile Include="src\dasm\Scanner.cpp" />
     <ClCompile Include="src\dbc\Builder.cpp" />
     <ClCompile Include="src\dbc\Debug.cpp" />
     <ClCompile Include="src\dbc\FileLoader.cpp" />
@@ -151,6 +154,17 @@
     <ClCompile Include="src\dbc\SyntaxAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\dasm\Common.h" />
+    <ClInclude Include="include\dasm\Debug.h" />
+    <ClInclude Include="include\dasm\Emitter.h" />
+    <ClInclude Include="include\dasm\Node.h" />
+    <ClInclude Include="include\dasm\OpCodes.h" />
+    <ClInclude Include="include\dasm\Parser.h" />
+    <ClInclude Include="include\dasm\Scanner.h" />
+    <ClInclude Include="include\dasm\Token.h" />
+    <ClInclude Include="include\dasm\Types.h" />
+    <ClInclude Include="include\dasm\Utility.h" />
+    <ClInclude Include="include\dasm\Words.h" />
     <ClInclude Include="include\dbc\ArgsControl.h" />
     <ClInclude Include="include\dbc\Builder.h" />
     <ClInclude Include="include\dbc\CodeGenerator.h" />

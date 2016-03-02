@@ -9,9 +9,10 @@ int main(int argc, const char* argv[])
 {
 	using namespace dbc;
 #if _DEBUG || DEBUG
-	gen::ASM6502CG Generator(true);
-	Builder::Build("test/main.dbs", &Generator, true, true);
-	Builder::SaveSourceFile("out.s65");
+	gen::ASM6502CG Generator(false);
+	Builder::Build("test/main.dbs", &Generator, true, true, true);
+	Builder::SaveSourceFile("out.seq");
+	Builder::AssembleProgram("test.prg");
 	Builder::Destoy();
 	PAUSE;
 #else
@@ -19,6 +20,7 @@ int main(int argc, const char* argv[])
 	{
 		bool Verbose = false;
 		bool HelpPrinted = false;
+		bool OutputAsm = false;
 		const char* MainFile = nullptr;
 		const char* OutFile = nullptr;
 		const char* Gen = nullptr;
@@ -39,12 +41,13 @@ int main(int argc, const char* argv[])
 					printf("Usage:\n");
 					printf("\tdbc -[command] [argument]\n");
 					printf("\nExample:\n");
-					printf("\tdbc -i main.dbs -t 6502 -o output.asm\n");
+					printf("\tdbc -i main.dbs -t 6502 -o output.prg\n");
 					printf("\nCommands:\n");
 					printf("\t-i Input file.\n");
 					printf("\t-t Target [6502].\n");
 					printf("\t-o Output file name (optional).\n");
 					printf("\t-v Verbose print (optional).\n");
+					printf("\t-s Output assembly file.\n");
 					HelpPrinted = true;
 					break;
 					break;
@@ -73,6 +76,9 @@ int main(int argc, const char* argv[])
 					}
 					continue;
 					break;
+				case ArgsControl::Command::ASMOUT:
+					OutputAsm = true;
+					break;
 				case ArgsControl::Command::NONE:
 					ArgError("Invalid Argument %s", argv[Index]);
 					break;
@@ -96,11 +102,22 @@ int main(int argc, const char* argv[])
 			Builder::Build(MainFile, Generator, true, Verbose);
 			if (OutFile == nullptr)
 			{
-				Builder::SaveSourceFile((std::string("out.") + ArgsControl::GetExt(GType)).c_str());
+				Builder::AssembleProgram((std::string("a.") + ArgsControl::GetExt(GType)).c_str());
 			}
 			else
 			{
-				Builder::SaveSourceFile(OutFile);
+				Builder::AssembleProgram(OutFile);
+			}
+			if (OutputAsm)
+			{
+				if (OutFile == nullptr)
+				{
+					Builder::SaveSourceFile((std::string("a.") + ArgsControl::GetExt(GenType::ASM6502_SRC)).c_str());
+				}
+				else
+				{
+					Builder::SaveSourceFile((std::string(OutFile) + "." + ArgsControl::GetExt(GenType::ASM6502_SRC)).c_str());
+				}
 			}
 			Builder::Destoy();
 		}

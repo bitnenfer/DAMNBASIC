@@ -9,7 +9,7 @@ std::vector<SemanticAnalyzer*> Builder::SemanticCheckers;
 std::vector<Scope> Builder::ScopeStack;
 std::vector<const char*> Builder::LoadedPaths;
 
-void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain, bool Verbose)
+void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain, bool Verbose, bool UpperCase)
 {
 	if (!AllowLoading(File))
 	{
@@ -24,6 +24,10 @@ void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain
 		Semant->Analyze(Tree);
 		Generator->Generate(Tree, File, IsMain);
 		TransData += Generator->GetTransSource();
+		if (UpperCase)
+		{
+			std::transform(TransData.begin(), TransData.end(), TransData.begin(), toupper);
+		}
 		Parsers.push_back(Parser);
 		SemanticCheckers.push_back(Semant);
 		if (IsMain && Verbose) printf("Compilation Successful.\n");
@@ -33,6 +37,20 @@ void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain
 void dbc::Builder::SaveSourceFile(const char* OutputFileName)
 {
 	SaveFile(OutputFileName, Builder::TransData);
+}
+
+
+void dbc::Builder::AssembleProgram(const char * OutputFileName)
+{
+	using namespace dasm;
+	Scanner Lex;
+	Lex.Scan(&TransData);
+	std::deque<dasm::TokenPtr> TokenStream = Lex.GetTokenStream();
+	Parser Parser;
+	dasm::NodePtr Root = Parser.Parse(&TokenStream);
+	dasm::Emitter Emitter;
+	Emitter.Emit(Root);
+	SaveBinaryFile(OutputFileName, Emitter.GetObjectCode());
 }
 
 void dbc::Builder::Destoy()

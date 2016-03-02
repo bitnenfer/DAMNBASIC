@@ -4,12 +4,14 @@
 #include <vector>
 #include <dbc/LeafNode.h>
 #include <dbc/Scope.h>
+#include <algorithm>
 
 namespace dbc
 {
 enum class GenType
 {
-	ASM6502,
+	ASM6502_BUILD,
+	ASM6502_SRC,
 	NONE
 };
 class CodeGenerator
@@ -46,14 +48,13 @@ public:
 	{
 		return Join();
 	}
-
 protected:
 	inline std::string Join()
 	{
 		std::string Joined;
 		for (std::string& Line : Lines)
 		{
-			Joined += Line + "\n";
+			Joined += Line + "\r";
 		}
 		return Joined;
 	}
@@ -62,9 +63,8 @@ protected:
 		Lines.push_back(Line);
 	}
 	const char* CurrentFile;
-
+	std::vector<std::string> Lines;
 private:
 	std::string Trans;
-	std::vector<std::string> Lines;
 };
 }
