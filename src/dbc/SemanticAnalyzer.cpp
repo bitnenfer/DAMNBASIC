@@ -3,7 +3,7 @@
 
 #define SemantError(Message, ...) \
 	fprintf(stderr, "\n%s ", SourcePath); \
-	if (Current != nullptr) fprintf(stderr, "Line: %llu - Semantic Error: ", Current->Line);\
+	if (Current != nullptr) fprintf(stderr, "Line: %zu - Semantic Error: ", Current->Line);\
 	fprintf(stderr, Message, ##__VA_ARGS__); \
 	getchar(); \
 	exit(-1);

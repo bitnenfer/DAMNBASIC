@@ -26,7 +26,7 @@ using namespace dbc;
 
 #define ParseError(Message, ...) \
 	fprintf(stderr, "\n%s ", SourcePath); \
-	if (CurrentToken != nullptr) fprintf(stderr, "Line: %llu - Parsing Error: ", CurrentToken->Line);\
+	if (CurrentToken != nullptr) fprintf(stderr, "Line: %zu - Parsing Error: ", CurrentToken->Line);\
 	fprintf(stderr, Message, ##__VA_ARGS__); \
 	PAUSE; \
 	exit(-1);
@@ -34,11 +34,11 @@ using namespace dbc;
 
 
 dbc::SyntaxAnalyzer::SyntaxAnalyzer(std::string & Source, const char * Path) :
-	SourcePath(Path),
 	Lexer(SourcePath),
 	InFunction(false),
 	InWhile(0),
-	InIf(0)
+	InIf(0),
+	SourcePath(Path)
 {
 	CurrentToken = nullptr;
 	TokenStream = Lexer.Analyze(Source);

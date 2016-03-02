@@ -12,7 +12,7 @@ using namespace dbc;
 
 #define LexerError(Message, ...) \
 		fprintf(stderr, "\n%s ", SourcePath); \
-		fprintf(stderr, "Line %llu Lexing Error: ",LineCount); \
+		fprintf(stderr, "Line %zu Lexing Error: ", LineCount); \
 		fprintf(stderr, Message, ##__VA_ARGS__); \
 		fprintf(stderr, "\n"); \
 		PAUSE; \

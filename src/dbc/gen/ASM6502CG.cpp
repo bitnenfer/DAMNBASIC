@@ -1065,7 +1065,7 @@ void dbc::gen::ASM6502CG::AddLocal(char * VarName, bool Local)
 {
 	if (CurrentScope != nullptr)
 	{
-		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size() + (Local ? 1 : 0)), Local));
+		CurrentScope->Variables.push_back(LocalVar(VarName, static_cast<int16>(CurrentScope->Variables.size() + Local ? 1 : 0), Local));
 	}
 }
 

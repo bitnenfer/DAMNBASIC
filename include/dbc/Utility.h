@@ -13,7 +13,7 @@ static bool IsBitwise(LeafPtr Node)
 			Node->Type == LeafType::EXPR_SHL ||
 			Node->Type == LeafType::EXPR_SHR;
 	}
-	return false;
+	return nullptr;
 }
 static bool IsLogical(LeafPtr Node)
 {
@@ -22,7 +22,7 @@ static bool IsLogical(LeafPtr Node)
 		return Node->Type == LeafType::EXPR_AND ||
 			Node->Type == LeafType::EXPR_OR;
 	}
-	return false;
+	return nullptr;
 }
 static bool IsCompare(LeafPtr Node)
 {

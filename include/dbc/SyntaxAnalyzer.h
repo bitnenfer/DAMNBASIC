@@ -45,13 +45,12 @@ protected:
 	LeafPtr ParseConstIdentifier();
 
 private:
-	const char* SourcePath;
 	LexicalAnalyzer Lexer;
 	std::deque<TokenPtr> TokenStream;
 	TokenPtr CurrentToken;
 	bool InFunction;
 	int64 InWhile;
 	int64 InIf;
-	
+	const char* SourcePath;
 };
 }
