@@ -43,6 +43,7 @@ protected:
 	LeafPtr ParseConstNumber();
 	LeafPtr ParseConstBoolean();
 	LeafPtr ParseConstIdentifier();
+	LeafPtr ParseConstMemAddress();
 
 private:
 	LexicalAnalyzer Lexer;

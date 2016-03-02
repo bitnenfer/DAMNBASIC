@@ -156,6 +156,8 @@ bool dbc::LexicalAnalyzer::ScanSymbols(TokenPtr & Token)
 	if (ScanComma(Token)) return true;
 	if (ScanLParen(Token)) return true;
 	if (ScanRParen(Token)) return true;
+	if (ScanLSQBrack(Token)) return true;
+	if (ScanRSQBrack(Token)) return true;
 	return false;
 }
 
@@ -347,6 +349,24 @@ bool dbc::LexicalAnalyzer::ScanRParen(TokenPtr & Token)
 	if (LastChar == ')')
 	{
 		Token = NewToken(TokenType::SYM_RPAREN);
+		return true;
+	}
+	return false;
+}
+bool dbc::LexicalAnalyzer::ScanLSQBrack(TokenPtr & Token)
+{
+	if (LastChar == '[')
+	{
+		Token = NewToken(TokenType::SYM_LSQBRACK);
+		return true;
+	}
+	return false;
+}
+bool dbc::LexicalAnalyzer::ScanRSQBrack(TokenPtr & Token)
+{
+	if (LastChar == ']')
+	{
+		Token = NewToken(TokenType::SYM_RSQBRACK);
 		return true;
 	}
 	return false;

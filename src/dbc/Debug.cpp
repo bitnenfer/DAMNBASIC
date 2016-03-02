@@ -24,6 +24,12 @@ void dbc::PrintToken(dbc::TokenPtr Token)
 		TokenType Type = Token->Type;
 		switch (Type)
 		{
+			case dbc::TokenType::SYM_LSQBRACK:
+				PRINTLN("[");
+				break;
+			case dbc::TokenType::SYM_RSQBRACK:
+				PRINTLN("]");
+				break;
 			case dbc::TokenType::LINEFEED:
 				PRINTLN("line feed");
 				break;
@@ -144,6 +150,9 @@ void dbc::PrintLeaf(LeafPtr Node)
 		LeafType Type = Node->Type;
 		switch (Type)
 		{
+			case dbc::LeafType::CONST_MEMADDRESS:
+				PRINTLN("EXPR_MEMADDRESS");
+				break;
 			case dbc::LeafType::EXPR_MOD:
 				PRINTLN("EXPR_MOD");
 				break;
@@ -250,7 +259,7 @@ void dbc::PrintLeaf(LeafPtr Node)
 				PRINTLN("EXPR_CALL");
 				break;
 			case dbc::LeafType::CONST_NUMBER:
-				PRINTLN("CONST_NUMBER %u", Node->UINT8);
+				PRINTLN("CONST_NUMBER %u", Node->UINT16);
 				break;
 			case dbc::LeafType::CONST_BOOLEAN:
 				PRINTLN("CONST_BOOLEAN value: %s", Node->BOOL ? "true" : "false");

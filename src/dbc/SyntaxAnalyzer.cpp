@@ -660,6 +660,10 @@ LeafPtr dbc::SyntaxAnalyzer::ParseFactor()
 	{
 		Factor = ParseConstIdentifier();
 	}
+	else if (TokenEquals(TokenType::SYM_LSQBRACK))
+	{
+		Factor = ParseConstMemAddress();
+	}
 	else if (TokenEquals(TokenType::SYM_LPAREN))
 	{
 		PullToken();
@@ -676,7 +680,7 @@ LeafPtr dbc::SyntaxAnalyzer::ParseFactor()
 LeafPtr dbc::SyntaxAnalyzer::ParseConstNumber()
 {
 	LeafPtr NumConst = NewLeaf(LeafType::CONST_NUMBER);
-	NumConst->UINT8 = static_cast<uint8>(std::stoi(CurrentToken->RawValue));
+	NumConst->UINT16 = static_cast<uint16>(std::stoi(CurrentToken->RawValue));
 	PullToken();
 	return NumConst;
 }
@@ -695,4 +699,13 @@ LeafPtr dbc::SyntaxAnalyzer::ParseConstIdentifier()
 	IdentConst->STRING = const_cast<char*>(CurrentToken->RawValue.c_str());
 	PullToken();
 	return IdentConst;
+}
+
+LeafPtr dbc::SyntaxAnalyzer::ParseConstMemAddress()
+{
+	LeafPtr MemAddressConst = NewLeaf(LeafType::CONST_MEMADDRESS);
+	PullToken();
+	MemAddressConst->Left = ParseExprOr();
+	PullToken();
+	return MemAddressConst;
 }

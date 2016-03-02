@@ -47,6 +47,8 @@ protected:
 	bool ScanComma(TokenPtr& Token);
 	bool ScanLParen(TokenPtr& Token);
 	bool ScanRParen(TokenPtr& Token);
+	bool ScanLSQBrack(TokenPtr& Token);
+	bool ScanRSQBrack(TokenPtr& Token);
 	// Keywords
 	bool ScanWordNot(TokenPtr& Token);
 	bool ScanWordFunc(TokenPtr& Token);

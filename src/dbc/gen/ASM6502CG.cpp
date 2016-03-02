@@ -5,7 +5,7 @@
 using namespace dbc;
 
 static constexpr uint16 DefaultCount = 0;
-static std::string CurrentOp = "lda";
+static std::string CurrentOp = "lda ";
 static int16 CurrentReturnOffset = 0;
 static bool GotOnScope = false;
 static int16 CurrentVarOffset = 0;
@@ -34,6 +34,7 @@ static LeafPtr StaticLeafPtr = nullptr;
 static constexpr const char NewLine[] = "\r";
 static constexpr const char LabelTail[] = "\r";
 static size_t MainLine = 0;
+static bool Needs16Bit = false;
 
 dbc::gen::ASM6502CG::ASM6502CG(bool Verbose)
 {
@@ -214,6 +215,10 @@ std::string dbc::gen::ASM6502CG::GenConst(LeafPtr Node)
 	{
 		return GenConstIdentifier(Node) + "\r";
 	}
+	else if (Node->Type == LeafType::CONST_MEMADDRESS)
+	{
+		return GenMemAddressing(Node) + "\r";
+	}
 	return Verbose ? "INVALID" : "";;
 }
 
@@ -254,7 +259,14 @@ std::string dbc::gen::ASM6502CG::GenConstBoolean(LeafPtr Node)
 
 std::string dbc::gen::ASM6502CG::GenConstNumber(LeafPtr Node)
 {
-	return CurrentOp + "#$" + NumberToHex<uint8>(Node->UINT8);
+	if (Needs16Bit)
+	{
+		return CurrentOp + "$" + NumberToHex<uint16>(Node->UINT16);
+	}
+	else
+	{
+		return CurrentOp + "#$" + NumberToHex<uint8>(Node->UINT8);
+	}
 }
 
 std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
@@ -1024,6 +1036,22 @@ std::string dbc::gen::ASM6502CG::GenStmtElse(LeafPtr Node)
 	// endof body
 	AddLabel(GetScopeName() + "endif" + std::to_string(IfCount));
 	Out += "jmp " + GetLabelId(GetScopeName() + "endif" + std::to_string(IfCount)) + "\r";
+	return Out;
+}
+
+std::string dbc::gen::ASM6502CG::GenMemAddressing(LeafPtr Node)
+{
+	std::string Out;
+	if (IsConst(Node->Left))
+	{
+		Needs16Bit = true;
+		Out += GenConst(Node->Left);
+		Needs16Bit = false;
+	}
+	else if (IsExpr(Node->Left))
+	{
+		Out += GenExpr(Node->Left);
+	}
 	return Out;
 }
 

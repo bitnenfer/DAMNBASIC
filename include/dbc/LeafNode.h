@@ -40,6 +40,7 @@ enum class LeafType
 	EXPR_MUL,
 	EXPR_NEGATE,
 	EXPR_CALL,
+	CONST_MEMADDRESS,
 	CONST_NUMBER,
 	CONST_BOOLEAN,
 	CONST_IDENTIFIER,
@@ -68,6 +69,7 @@ struct LeafNode
 	uint64 Line;
 	union
 	{
+		uint16 UINT16;
 		uint8 UINT8;
 		bool BOOL;
 		char* STRING;

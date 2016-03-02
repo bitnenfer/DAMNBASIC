@@ -1,5 +1,6 @@
 #include <dbc/Builder.h>
 #include <cstdio>
+#include <dbc/Debug.h>
 
 using namespace dbc;
 
@@ -20,6 +21,7 @@ void dbc::Builder::Build(const char* File, CodeGenerator* Generator, bool IsMain
 		SemanticAnalyzer* Semant = new SemanticAnalyzer(File, &ScopeStack, IsMain);
 		if (IsMain && Verbose) printf("Parsing...\n");
 		LeafPtr Tree = Parser->Analyze();
+		dbc::PrintSyntaxTree(Tree);
 		if (IsMain && Verbose) printf("Semantic Checking...\n");
 		Semant->Analyze(Tree);
 		Generator->Generate(Tree, File, IsMain);

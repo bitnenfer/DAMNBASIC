@@ -26,7 +26,8 @@
 !
 !	# entry point
 !	func main ()
-!		let seq = fib(value)
+!		[value] = 10
+!		let seq = fib([value])
 !	end
 !
 !======================================================
@@ -162,7 +163,11 @@
 							|
 							<boolean-const>
 							|
+							<memory-addressing>
+							|
 							'(' <or-expr> ')'
+
+<memory-addressing>		::=	'[' (<identifier> | <number-const>) ']'
 
 <number-const>			::= <digit> { <digit> }
 

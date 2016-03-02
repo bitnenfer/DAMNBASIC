@@ -43,7 +43,8 @@ static bool IsConst(LeafPtr Node)
 	{
 		return Node->Type == LeafType::CONST_BOOLEAN ||
 			Node->Type == LeafType::CONST_IDENTIFIER ||
-			Node->Type == LeafType::CONST_NUMBER;
+			Node->Type == LeafType::CONST_NUMBER ||
+			Node->Type == LeafType::CONST_MEMADDRESS;
 	}
 	return false;
 }

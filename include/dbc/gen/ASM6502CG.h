@@ -39,6 +39,7 @@ public:
 	virtual std::string GenStmtIf(LeafPtr Node) override;
 	virtual std::string GenStmtElseIf(LeafPtr Node) override;
 	virtual std::string GenStmtElse(LeafPtr Node) override;
+	virtual std::string GenMemAddressing(LeafPtr Node) override;
 	std::string GenExprCheck(LeafPtr Node);
 
 
