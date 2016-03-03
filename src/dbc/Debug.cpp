@@ -150,6 +150,12 @@ void dbc::PrintLeaf(LeafPtr Node)
 		LeafType Type = Node->Type;
 		switch (Type)
 		{
+			case dbc::LeafType::STMT_MEMWRITE:
+				PRINTLN("STMT_MEMWRITE");
+				break;
+			case dbc::LeafType::EXPR_MEMREAD:
+				PRINTLN("EXPR_MEMREAD");
+				break;
 			case dbc::LeafType::CONST_MEMADDRESS:
 				PRINTLN("EXPR_MEMADDRESS");
 				break;

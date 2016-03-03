@@ -26,7 +26,8 @@
 !
 !	# entry point
 !	func main ()
-!		[value] = 10
+!		[1024] = 100
+		value = [1024]
 !		let seq = fib([value])
 !	end
 !

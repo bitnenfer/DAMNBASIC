@@ -24,6 +24,7 @@ public:
 	virtual std::string GenConstBoolean(LeafPtr Node) = 0;
 	virtual std::string GenConstNumber(LeafPtr Node) = 0;
 	virtual std::string GenExpr(LeafPtr Node) = 0;
+	virtual std::string GenExprMemRead(LeafPtr Node) = 0;
 	virtual std::string GenExprCall(LeafPtr Node) = 0;
 	virtual std::string GenExprNegate(LeafPtr Node) = 0;
 	virtual std::string GenExprMul(LeafPtr Node) = 0;
@@ -38,6 +39,7 @@ public:
 	virtual std::string GenDeclVar(LeafPtr Node) = 0;
 	virtual std::string GenDeclFunc(LeafPtr Node) = 0;
 	virtual std::string GenVarList(LeafPtr Node) = 0;
+	virtual std::string GenStmtMemWrite(LeafPtr Node) = 0;
 	virtual std::string GenStmtReturn(LeafPtr Node) = 0;
 	virtual std::string GenStmtWhile(LeafPtr Node) = 0;
 	virtual std::string GenStmtAssign(LeafPtr Node) = 0;

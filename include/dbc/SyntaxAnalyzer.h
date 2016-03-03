@@ -21,6 +21,8 @@ protected:
 	LeafPtr ParseStmtElseIf();
 	LeafPtr ParseStmtElse();
 	LeafPtr ParseStmtAssign();
+	LeafPtr ParseMemWrite();
+	LeafPtr ParseMemRead();
 	LeafPtr ParseStmtWhile();
 	LeafPtr ParseStmtReturn();
 	// Declaration
@@ -43,7 +45,6 @@ protected:
 	LeafPtr ParseConstNumber();
 	LeafPtr ParseConstBoolean();
 	LeafPtr ParseConstIdentifier();
-	LeafPtr ParseConstMemAddress();
 
 private:
 	LexicalAnalyzer Lexer;

@@ -43,8 +43,7 @@ static bool IsConst(LeafPtr Node)
 	{
 		return Node->Type == LeafType::CONST_BOOLEAN ||
 			Node->Type == LeafType::CONST_IDENTIFIER ||
-			Node->Type == LeafType::CONST_NUMBER ||
-			Node->Type == LeafType::CONST_MEMADDRESS;
+			Node->Type == LeafType::CONST_NUMBER;
 	}
 	return false;
 }
@@ -72,7 +71,8 @@ static bool IsExpr(LeafPtr Node)
 				Node->Type == LeafType::EXPR_SUB ||
 				Node->Type == LeafType::EXPR_DIV ||
 				Node->Type == LeafType::EXPR_MUL ||
-				Node->Type == LeafType::EXPR_NEGATE);
+				Node->Type == LeafType::EXPR_NEGATE ||
+				Node->Type == LeafType::EXPR_MEMREAD);
 	}
 	return false;
 }

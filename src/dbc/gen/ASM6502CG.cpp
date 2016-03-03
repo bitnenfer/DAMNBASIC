@@ -77,7 +77,7 @@ void dbc::gen::ASM6502CG::Generate(LeafPtr Node, const char * File, bool IsMain)
 {
 	if (IsMain && Verbose)
 	{
-		printf("Generating 6502 Assembly Code...\r");
+		//printf("\nGenerating 6502 Assembly Code...\r");
 	}
 	CurrentFile = File;
 	LeafPtr Current = Node;
@@ -171,6 +171,10 @@ std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 	else if (Node->Type == LeafType::STMT_ASSIGN)
 	{
 		return GenStmtAssign(Node);
+	}
+	else if (Node->Type == LeafType::STMT_MEMWRITE)
+	{
+		return GenStmtMemWrite(Node);
 	}
 	else if (Node->Type == LeafType::STMT_WHILE)
 	{
@@ -328,7 +332,25 @@ std::string dbc::gen::ASM6502CG::GenExpr(LeafPtr Node)
 		Out += "pla\r";
 		return Out;
 	}
+	else if (Node->Type == LeafType::EXPR_MEMREAD)
+	{
+		return GenExprMemRead(Node);
+	}
 	return Verbose ? "INVALID" : "";;
+}
+
+std::string dbc::gen::ASM6502CG::GenExprMemRead(LeafPtr Node)
+{
+	std::string Out;
+	if (Verbose) Out += "; Memory Read\r";
+	if (IsConst(Node->Left))
+	{
+		CurrentOp = "lda ";
+		Needs16Bit = true;
+		Out += GenConst(Node->Left);
+		Needs16Bit = false;
+	}
+	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenExprNot(LeafPtr Node)
@@ -805,6 +827,18 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenVarList(LeafPtr Node)
 {
 	return std::string();
+}
+
+std::string dbc::gen::ASM6502CG::GenStmtMemWrite(LeafPtr Node)
+{
+	std::string Out;
+	if (Verbose) Out += "; Memory Write\r";
+	Out += GenCode(Node->Right);
+	CurrentOp = "sta ";
+	Needs16Bit = true;
+	Out += GenConst(Node->Left);
+	Needs16Bit = false;
+	return Out;
 }
 
 std::string dbc::gen::ASM6502CG::GenStmtReturn(LeafPtr Node)

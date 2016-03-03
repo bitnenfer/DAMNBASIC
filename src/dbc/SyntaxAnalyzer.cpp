@@ -106,6 +106,10 @@ LeafPtr dbc::SyntaxAnalyzer::ParseStmt()
 			}
 			Stmt->Left = ParseStmtIf();
 		}
+		else if (TokenEquals(TokenType::SYM_LSQBRACK))
+		{
+			Stmt->Left = ParseMemWrite();
+		}
 		else if (TokenEquals(TokenType::IDENTIFIER) &&
 				 TokenNextEquals(TokenType::SYM_EQU))
 		{
@@ -270,6 +274,42 @@ LeafPtr dbc::SyntaxAnalyzer::ParseStmtAssign()
 		ParseError("Missing expression in assign statement");
 	}
 	return Assign;
+}
+
+LeafPtr dbc::SyntaxAnalyzer::ParseMemWrite()
+{
+	LeafPtr MemWrite = NewLeaf(LeafType::STMT_MEMWRITE);
+	PullToken();
+	MemWrite->Left = ParseExprOr();
+	if (TokenNotEquals(TokenType::SYM_RSQBRACK))
+	{
+		ParseError("Missing ] in memory write statement");
+	}
+	PullToken();
+	if (TokenNotEquals(TokenType::SYM_EQU))
+	{
+		ParseError("Missing = in memory write statement");
+	}
+	PullToken();
+	MemWrite->Right = ParseExprOr();
+	if (MemWrite->Right == nullptr)
+	{
+		ParseError("Missing expression in memory write statement");
+	}
+	return MemWrite;
+}
+
+LeafPtr dbc::SyntaxAnalyzer::ParseMemRead()
+{
+	LeafPtr MemRead = NewLeaf(LeafType::EXPR_MEMREAD);
+	PullToken();
+	MemRead->Left = ParseExprOr();
+	if (TokenNotEquals(TokenType::SYM_RSQBRACK))
+	{
+		ParseError("Missing ] in memory read statement");
+	}
+	PullToken();
+	return MemRead;
 }
 
 LeafPtr dbc::SyntaxAnalyzer::ParseStmtWhile()
@@ -662,7 +702,7 @@ LeafPtr dbc::SyntaxAnalyzer::ParseFactor()
 	}
 	else if (TokenEquals(TokenType::SYM_LSQBRACK))
 	{
-		Factor = ParseConstMemAddress();
+		Factor = ParseMemRead();
 	}
 	else if (TokenEquals(TokenType::SYM_LPAREN))
 	{
@@ -701,11 +741,3 @@ LeafPtr dbc::SyntaxAnalyzer::ParseConstIdentifier()
 	return IdentConst;
 }
 
-LeafPtr dbc::SyntaxAnalyzer::ParseConstMemAddress()
-{
-	LeafPtr MemAddressConst = NewLeaf(LeafType::CONST_MEMADDRESS);
-	PullToken();
-	MemAddressConst->Left = ParseExprOr();
-	PullToken();
-	return MemAddressConst;
-}
