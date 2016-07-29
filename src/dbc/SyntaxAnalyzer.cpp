@@ -131,6 +131,10 @@ LeafPtr dbc::SyntaxAnalyzer::ParseStmt()
 		{
 			Stmt->Left = ParseDeclVar();
 		}
+		else if (TokenEquals(TokenType::WORD_NATIVE))
+		{
+			Stmt->Left = ParseDeclNative();
+		}
 		else if (TokenEquals(TokenType::IDENTIFIER) &&
 				 TokenNextEquals(TokenType::SYM_LPAREN))
 		{
@@ -414,6 +418,14 @@ LeafPtr dbc::SyntaxAnalyzer::ParseDeclVarList()
 		VarList->Right = ParseDeclVarList();
 	}
 	return VarList;
+}
+
+LeafPtr dbc::SyntaxAnalyzer::ParseDeclNative()
+{
+	LeafPtr Native = NewLeaf(LeafType::DECL_NATIVE);
+	Native->STRING = (char*)CurrentToken->RawValue.c_str();
+	PullToken();
+	return Native;
 }
 
 LeafPtr dbc::SyntaxAnalyzer::ParseExprList()

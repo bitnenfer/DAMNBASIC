@@ -163,6 +163,7 @@ bool dbc::LexicalAnalyzer::ScanSymbols(TokenPtr & Token)
 
 bool dbc::LexicalAnalyzer::ScanKeywords(TokenPtr & Token)
 {
+	if (ScanWordNative(Token)) return true;
 	if (ScanWordFunc(Token)) return true;
 	if (ScanWordIf(Token)) return true;
 	if (ScanWordElseIf(Token)) return true;
@@ -224,7 +225,7 @@ bool dbc::LexicalAnalyzer::ScanComment()
 bool dbc::LexicalAnalyzer::ScanNotEqu(TokenPtr & Token)
 {
 	if (CheckPair('<', '>'))
-	{		
+	{
 		Token = NewToken(TokenType::SYM_NOTEQU);
 		GetNextChar();
 		return true;
@@ -529,6 +530,25 @@ bool dbc::LexicalAnalyzer::ScanWordShr(TokenPtr & Token)
 	if (ScanKeywordName(KEYWORD_SHR))
 	{
 		Token = NewToken(TokenType::WORD_SHR);
+		return true;
+	}
+	return false;
+}
+bool dbc::LexicalAnalyzer::ScanWordNative(TokenPtr & Token)
+{
+	if (ScanKeywordName(KEYWORD_NATIVE))
+	{
+		Token = NewToken(TokenType::WORD_NATIVE);
+		GetNextChar();
+		Token->RawValue += LastChar;
+		GetNextChar();
+		while (!ScanKeywordName(KEYWORD_END))
+		{
+			if (LastChar == '\n')
+				++LineCount;
+			Token->RawValue += LastChar;
+			GetNextChar();
+		}
 		return true;
 	}
 	return false;

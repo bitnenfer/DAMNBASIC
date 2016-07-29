@@ -34,6 +34,7 @@ public:
 	virtual std::string GenDeclVar(LeafPtr Node) override;
 	virtual std::string GenDeclFunc(LeafPtr Node) override;
 	virtual std::string GenVarList(LeafPtr Node) override;
+	virtual std::string GenDeclNative(LeafPtr Node) override;
 	virtual std::string GenStmtMemWrite(LeafPtr Node) override;
 	virtual std::string GenStmtReturn(LeafPtr Node) override;
 	virtual std::string GenStmtWhile(LeafPtr Node) override;

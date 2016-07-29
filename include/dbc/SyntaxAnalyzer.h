@@ -29,6 +29,7 @@ protected:
 	LeafPtr ParseDeclVar();
 	LeafPtr ParseDeclFunc();
 	LeafPtr ParseDeclVarList();
+	LeafPtr ParseDeclNative();
 	// Expressions
 	LeafPtr ParseExprList();
 	LeafPtr ParseExprOr();

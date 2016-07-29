@@ -22,6 +22,7 @@ static constexpr char KEYWORD_IMPORT[] = "import";
 static constexpr char KEYWORD_TRUE[] = "true";
 static constexpr char KEYWORD_FALSE[] = "false";
 static constexpr char KEYWORD_WHILE[] = "while";
+static constexpr char KEYWORD_NATIVE[] = "native";
 // modulus
 static constexpr char KEYWORD_MOD[] = "mod";
 // shift left

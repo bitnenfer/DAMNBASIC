@@ -112,7 +112,7 @@ void dasm::Emitter::EmitInstruction(NodePtr CurrentNode)
 					{
 						EmitterError("Branch %s is out of range by %d bytes", CurrentNode->Left->STRING.c_str(), CheckOutOfBounds);
 					}
-					PushByte(static_cast<uint8>(Value.Value) - Buffer.size() + 1);
+					PushByte(static_cast<uint8>(Value.Value) - (BYTE)Buffer.size() + 1);
 				}
 			}
 			else
@@ -122,7 +122,7 @@ void dasm::Emitter::EmitInstruction(NodePtr CurrentNode)
 				{
 					EmitterError("Relative address is out of range by %d bytes", CheckOutOfBounds);
 				}
-				PushByte(CurrentNode->Left->UINT8 - Buffer.size() - 1);
+				PushByte(CurrentNode->Left->UINT8 - (BYTE)Buffer.size() - 1);
 			}
 		}
 		else if (CurrentNode->Left->Type != ENode::IDE_VALUE &&
@@ -258,7 +258,7 @@ void dasm::Emitter::ResolveLables(NodePtr Root)
 			}
 			if (Left->Type == ENode::LABEL)
 			{
-				AddressData AD{Address, true};
+				AddressData AD{(uint16)Address, true};
 				Constants[Left->Left->STRING] = AD;
 			}
 			else 

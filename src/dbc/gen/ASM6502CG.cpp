@@ -152,6 +152,10 @@ std::string dbc::gen::ASM6502CG::GenCode(LeafPtr Node)
 	{
 		return GenConst(Node);
 	}
+	else if (Node->Type == LeafType::DECL_NATIVE)
+	{
+		return GenDeclNative(Node);
+	}
 	else if (Node->Type == LeafType::STMT_IF)
 	{
 		return GenStmtIf(Node);
@@ -269,6 +273,8 @@ std::string dbc::gen::ASM6502CG::GenConstNumber(LeafPtr Node)
 	}
 	else
 	{
+		if (CurrentOp == "sta ")
+			return "lda #$" + NumberToHex<uint8>(Node->UINT8);
 		return CurrentOp + "#$" + NumberToHex<uint8>(Node->UINT8);
 	}
 }
@@ -827,6 +833,15 @@ std::string dbc::gen::ASM6502CG::GenDeclFunc(LeafPtr Node)
 std::string dbc::gen::ASM6502CG::GenVarList(LeafPtr Node)
 {
 	return std::string();
+}
+
+std::string dbc::gen::ASM6502CG::GenDeclNative(LeafPtr Node)
+{
+	std::string DeclNative;
+	if (Verbose) DeclNative += "; Native block start\r";
+	DeclNative += Node->STRING;
+	if (Verbose) DeclNative += "\n; Native block end\r";
+	return DeclNative;
 }
 
 std::string dbc::gen::ASM6502CG::GenStmtMemWrite(LeafPtr Node)

@@ -1,20 +1,12 @@
-func delay(times)
-	let count = 0
-	while (count < times)
-		let d = 255
-		while (d <> 0)
-			d = d - 1
-		end
-		count = count - 1
-	end
+func set_background_color(value)
+	[1024] = value
+	#[53280] = value
+	#[53281] = value
 end
 
 func main()
-	[1024] = 255
-	while ([1024])
-		delay(255)
-		delay(255)
-		delay(255)
-		[1024] = [1024] - 1
+	let x = 1
+	while (x)
+		#set_background_color([53266])
 	end
 end

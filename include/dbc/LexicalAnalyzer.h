@@ -67,7 +67,7 @@ protected:
 	bool ScanWordBor(TokenPtr& Token);
 	bool ScanWordShl(TokenPtr& Token);
 	bool ScanWordShr(TokenPtr& Token);
-
+	bool ScanWordNative(TokenPtr& Token);
 	// Terminals
 	bool ScanNumber(TokenPtr& Token);
 	bool ScanBoolean(TokenPtr& Token);

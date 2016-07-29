@@ -39,6 +39,7 @@ public:
 	virtual std::string GenDeclVar(LeafPtr Node) = 0;
 	virtual std::string GenDeclFunc(LeafPtr Node) = 0;
 	virtual std::string GenVarList(LeafPtr Node) = 0;
+	virtual std::string GenDeclNative(LeafPtr Node) = 0;
 	virtual std::string GenStmtMemWrite(LeafPtr Node) = 0;
 	virtual std::string GenStmtReturn(LeafPtr Node) = 0;
 	virtual std::string GenStmtWhile(LeafPtr Node) = 0;

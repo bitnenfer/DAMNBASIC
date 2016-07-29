@@ -10,5 +10,7 @@
 #if !_DEBUG && DEBUG
 #define PAUSE ;
 #else
+#ifndef PAUSE
 #define PAUSE getchar();
+#endif
 #endif

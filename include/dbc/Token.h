@@ -27,6 +27,7 @@ enum class TokenType
 	WORD_SHL,
 	WORD_SHR,
 	WORD_MOD,
+	WORD_NATIVE,
 	SYM_NOTEQU,
 	SYM_EQU,
 	SYM_LT,
