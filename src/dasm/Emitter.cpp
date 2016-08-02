@@ -35,7 +35,7 @@ inline static dasm::uint8 Hex8ToByte(std::string& Hex)
 	return static_cast<dasm::uint8>(strtoul(Hex.c_str(), NULL, 16));
 }
 
-void dasm::Emitter::Emit(NodePtr RootNode)
+void dasm::Emitter::Emit(NodePtr RootNode, Emitter::BinType type)
 {
 	// Scan constants
 	NodePtr Line = RootNode;
@@ -79,6 +79,10 @@ void dasm::Emitter::EmitLine(NodePtr CurrentNode)
 		else if (CurrentNode->Type == ENode::ORIGIN)
 		{
 			EmitOrigin(CurrentNode);
+		}
+		else if (CurrentNode->Type == ENode::DIR_BYTE)
+		{
+			EmitByteDirective(CurrentNode);
 		}
 	}
 	else
@@ -200,24 +204,28 @@ void dasm::Emitter::EmitOrigin(NodePtr CurrentNode)
 		PushByte(Word.HighByte);
 		PushByte(Word.LowByte);
 		OriginOffset += 2;
+		BufferOffsetOrigin = (uint16)Buffer.size();
 	}
 	else
 	{
-		if (LastNode->Type == ENode::ORIGIN)
+		if (LastNode != CurrentNode && LastNode->Type == ENode::ORIGIN)
 		{			
 			WordData Word = Hex16ToByte(CurrentNode->Left->STRING);
 			CurrentOrigin = Word.Value;
 			Buffer[Buffer.size() - 2] = Word.HighByte;
 			Buffer[Buffer.size() - 1] = Word.LowByte;
+			BufferOffsetOrigin = (uint16)Buffer.size();
 		}
 		else
 		{
 			WordData Word = Hex16ToByte(CurrentNode->Left->STRING);
 			uint16 NewOrigin = Word.Value;
+			uint16 Distance = NewOrigin - CurrentOrigin;
+			uint16 NewOffset = (uint16)Buffer.size() - Distance;
 			if (NewOrigin > CurrentOrigin)
 			{
 				uint16 Idx;
-				for (Idx = CurrentOrigin; Idx < NewOrigin; ++Idx)
+				for (Idx = CurrentOrigin; Idx < NewOrigin - Buffer.size() - 2; ++Idx)
 				{
 					PushByte(0);
 					OriginOffset += 1;
@@ -232,6 +240,17 @@ void dasm::Emitter::EmitOrigin(NodePtr CurrentNode)
 	}
 	CurrentOriginL = (CurrentOrigin / 256);
 	CurrentOriginH = (CurrentOrigin & 255);
+}
+
+void dasm::Emitter::EmitByteDirective(NodePtr CurrentNode)
+{
+	NodePtr node = CurrentNode->Left;
+	while (node != nullptr && node->Type == ENode::ARG_LIST)
+	{
+		if (node->Left != nullptr && node->Left->Type == ENode::HEX_VALUE)
+			PushByte(Hex8ToByte(node->Left->STRING));
+		node = node->Right;
+	}
 }
 
 void dasm::Emitter::PushByte(BYTE value)

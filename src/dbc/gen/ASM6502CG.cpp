@@ -40,10 +40,15 @@ dbc::gen::ASM6502CG::ASM6502CG(bool Verbose)
 {
 	this->Verbose = Verbose;
 	if (Verbose) AddLine("; DAMNBASIC to 6502 assembly code generated.");
-	if (Verbose) AddLine("; Setting origin to $0600");
 
+	AddLine(
+		/*"*= $0801\n"
+		".byte $0c, $08, $0a, $00, $9e, $20\n"
+		".byte $34, $30, $39, $36, $00, $00\n"
+		".byte $00\n"*/
+		"*= $1000\n\n"
+	);
 	AddLabel("main");
-	AddLine("*=$1000");
 	AddLine("jmp " + GetLabelId("main"));
 	AddLine(GetLabelId("main") + std::string(LabelTail));
 	PushScope("global");

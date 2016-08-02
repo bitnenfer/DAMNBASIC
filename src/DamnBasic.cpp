@@ -10,7 +10,7 @@ int main(int argc, const char* argv[])
 	using namespace dbc;
 #if _DEBUG || DEBUG
 	gen::ASM6502CG Generator(true);
-	Builder::Build("test/main.dbs", &Generator, true, false, true);
+	Builder::Build("test/main.dbs", &Generator, true, true, true);
 	Builder::SaveSourceFile("out.asm");
 	Builder::AssembleProgram("test.prg");
 	Builder::Destoy();

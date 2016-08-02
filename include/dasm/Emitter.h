@@ -10,8 +10,13 @@ namespace dasm
 class Emitter
 {
 	using BYTE = uint8;
+	enum BinType
+	{
+		PRG,
+		iNES
+	};
 public:
-	void Emit(NodePtr RootNode);
+	void Emit(NodePtr RootNode, BinType type);
 	inline std::vector<BYTE> GetObjectCode()
 	{
 		return Buffer;
@@ -24,6 +29,7 @@ protected:
 	void EmitDeclVar(NodePtr CurrentNode);
 	void EmitLabel(NodePtr CurrentNode);
 	void EmitOrigin(NodePtr CurrentNode);
+	void EmitByteDirective(NodePtr CurrentNode);
 	void PushByte(BYTE value);
 	void ResolveLables(NodePtr Root);
 	int32 ResolveBytes(NodePtr Op);
@@ -42,6 +48,6 @@ private:
 	uint8 CurrentOriginH;
 	uint8 CurrentOriginL;
 	uint16 OriginOffset = 0;
-	
+	uint16 BufferOffsetOrigin = 0;
 };
 }

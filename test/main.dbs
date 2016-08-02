@@ -1,12 +1,7 @@
-func set_background_color(value)
-	[1024] = value
-	#[53280] = value
-	#[53281] = value
-end
 
 func main()
-	let x = 1
-	while (x)
-		#set_background_color([53266])
+	while(1)
+		[53280] = [53280] + 1
+		[53281] = [53281] + 1
 	end
 end

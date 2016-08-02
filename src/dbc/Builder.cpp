@@ -1,6 +1,7 @@
 #include <dbc/Builder.h>
 #include <cstdio>
 #include <dbc/Debug.h>
+#include <dasm/Debug.h>
 
 using namespace dbc;
 
@@ -52,6 +53,7 @@ void dbc::Builder::AssembleProgram(const char * OutputFileName)
 	dasm::NodePtr Root = Parser.Parse(&TokenStream);
 	dasm::Emitter Emitter;
 	Emitter.Emit(Root);
+	Debug::PrintObjectCode(Emitter.GetObjectCode());
 	SaveBinaryFile(OutputFileName, Emitter.GetObjectCode());
 }
 
